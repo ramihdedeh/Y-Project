@@ -1,0 +1,19 @@
+<!--<?xml version="1.0" encoding="utf-8"?>
+<persistence version="3.1" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence 
+             https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd">
+
+	<persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>Client.models.User</class>
+		<class>Client.models.Post</class>
+		<properties>
+			<property name="hibernate.connection.url" value="jdbc:sqlite:./data/posts.db"/>
+			<property name="hibernate.connection.driver_class" value="org.sqlite.JDBC"/>
+			<property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
+			<property name="hibernate.hbm2ddl.auto" value="update"/>
+		</properties>
+	</persistence-unit>
+
+</persistence>-->

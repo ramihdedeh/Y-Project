@@ -1,43 +1,48 @@
 package com.yplatform.model;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.util.Date;
 
 public class User {
     private Long id;
-    private String name;
     private String email;
+    private String firstName;
+    private String lastName;
+    private Date dateOfBirth;
     private String username;
-    private String passwordHash;
 
+    // Password constraints
+    // - At least 8 characters
+    // - At least one uppercase letter
+    // - At least one lowercase letter
+    // - At least one digit
+    // - At least one special character
+    @NotBlank(message = "Password cannot be blank")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid password format")
+    private String password;
 
-    // Default constructor
-    public User() {}
+    // Constructors
 
-    // Parameterized constructor
-    public User(Long id, String name, String email, String username, String passwordHash) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.username = username;
-        this.passwordHash = passwordHash;
-        // Initialize createdAt and updatedAt to the current time
-
+    public User() {
     }
 
-    // Getters and setters for each field
+    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.username = username;
+        this.password = password;
+    }
+
+    // Getters and Setters
+
     public Long getId() {
         return id;
-
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -48,6 +53,30 @@ public class User {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -56,26 +85,14 @@ public class User {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-
-
-    // Implement toString() for easy printing of user information
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                '}';
-    }
+    // Additional methods if needed
 
 }

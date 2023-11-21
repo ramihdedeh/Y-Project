@@ -29,6 +29,4 @@ public class SQLiteDBManager {
             e.printStackTrace();
         }
     }
-
-    // Other methods for CRUD operations go here
 }

@@ -1,14 +1,16 @@
-package Client.repository;
-
-import Client.models.User;
-import Client.models.Post;
+package com.yplatform.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+
+import com.yplatform.model.Post;
+import com.yplatform.model.User;
+
 import java.util.List;
 import java.util.Set;
 

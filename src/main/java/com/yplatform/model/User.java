@@ -1,4 +1,4 @@
-package Client.models;
+package com.yplatform.model;
 
 import jakarta.persistence.*;
 import javax.validation.constraints.NotBlank;

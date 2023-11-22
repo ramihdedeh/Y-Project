@@ -1,5 +1,5 @@
 package com.yplatform.dao;
 
-public class UserDAOImpl {
+public class UserDAOImpl implements UserDAO{
     
 }

@@ -5,17 +5,23 @@ public class Post {
     private Long id;
     private String title;
     private String content;
-    private User user;
+    private Long user_id;
 
     // Constructors
 
     public Post() {
     }
 
-    public Post(String title, String content, User user) {
+    public Post(String title, String content, Long user_id) {
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.user_id = user_id;
+    }
+    public Post(Long id, String title, String content, Long user_id) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.user_id = user_id;
     }
 
     // Getters and Setters
@@ -44,15 +50,11 @@ public class Post {
         this.content = content;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return user_id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long user_id) {
+        this.user_id = user_id;
     }
-
-    // Additional methods if needed
-
-    // Additional methods if needed
 }

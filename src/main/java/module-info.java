@@ -10,8 +10,9 @@ module com.example.yplatform {
     requires org.kordamp.bootstrapfx.core;
 
     requires com.almasb.fxgl.all;
-    requires jakarta.persistence;
+    //requires jakarta.persistence;
     requires java.validation;
+    requires java.sql;
     opens Client to javafx.fxml;
     exports Client;
 }

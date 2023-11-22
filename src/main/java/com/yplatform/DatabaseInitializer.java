@@ -3,18 +3,22 @@ package com.yplatform;
 import com.yplatform.model.Post;
 import com.yplatform.model.User;
 import com.yplatform.repository.SQLiteDBManager;
+import com.yplatform.dao.PostDAO;
+import com.yplatform.dao.PostDAOImpl;
 
 import java.util.List;
-import java.util.Set;
+//import java.util.Set;
 
 public class DatabaseInitializer {
 
     public static void main(String[] args) {
         SQLiteDBManager dbManager = new SQLiteDBManager();
         dbManager.initializeDatabase();
-
+        /* 
         // Example: Creating and persisting a user
         User user = new User();
+        long Id = 1;
+        user.setId(Id);
         user.setUsername("user1");
         user.setPassword("Password123@");
 
@@ -31,13 +35,20 @@ public class DatabaseInitializer {
         Post post = new Post();
         post.setTitle("My First Post");
         post.setContent("This is the content of my first post.");
-        post.setUser(user);
+        post.setUserId(user.getId());
 
+        Post post2 = new Post();
+        post2.setTitle("My Second Post");
+        post2.setContent("This is the content of my second post.");
+        post2.setUserId(user.getId());
         // Persist post
-        //dbManager.createPost(post);
+        PostDAO postDAO = new PostDAOImpl();
+
+        postDAO.createPost(post);
+        postDAO.createPost(post2);
 
         // Example: Fetching posts
-        //List<Post> posts = dbManager.getAllPosts();
-        //System.out.println("Posts: " + posts);
+        List<Post> posts = postDAO.getPostsByUserId(user.getId());
+        System.out.println("Posts: " + posts);*/
     }
 }

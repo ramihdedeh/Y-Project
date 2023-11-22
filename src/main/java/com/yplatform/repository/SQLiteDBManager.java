@@ -2,7 +2,9 @@ package com.yplatform.repository;
 import java.sql.*;
 public class SQLiteDBManager {
     private static final String JDBC_URL = "jdbc:sqlite:./data/posts.db";
-
+    public static String getJdbcUrl() {
+        return JDBC_URL;
+    }
     public void initializeDatabase() {
         try (Connection connection = DriverManager.getConnection(JDBC_URL);
              Statement statement = connection.createStatement()) {

@@ -1,20 +1,22 @@
 package com.yplatform;
 
-import com.yplatform.model.Post;
-import com.yplatform.model.User;
+//import com.yplatform.model.Post;
+//import com.yplatform.model.User;
 import com.yplatform.repository.SQLiteDBManager;
-import com.yplatform.dao.PostDAO;
-import com.yplatform.dao.PostDAOImpl;
+//import com.yplatform.dao.PostDAO;
+//import com.yplatform.dao.PostDAOImpl;
 
-import java.util.List;
+//import java.util.List;
+//import java.util.logging.Logger;
+//import java.util.logging.Level;
 //import java.util.Set;
 
 public class DatabaseInitializer {
-
+    //private static final Logger logger = Logger.getLogger(DatabaseInitializer.class.getName());
     public static void main(String[] args) {
         SQLiteDBManager dbManager = new SQLiteDBManager();
         dbManager.initializeDatabase();
-        /* 
+        /*
         // Example: Creating and persisting a user
         User user = new User();
         long Id = 1;
@@ -29,7 +31,7 @@ public class DatabaseInitializer {
 
         // Example: Fetching users
         //List<User> users = dbManager.getAllUsers();
-       // System.out.println("Users: " + users);
+       // logger.info("Users: " + users);
 
         // Example: Creating and persisting a post associated with a user
         Post post = new Post();
@@ -49,6 +51,8 @@ public class DatabaseInitializer {
 
         // Example: Fetching posts
         List<Post> posts = postDAO.getPostsByUserId(user.getId());
-        System.out.println("Posts: " + posts);*/
+        for (Post postx : posts) {
+            logger.info("Post Title: " + postx.getTitle());
+        }*/
     }
 }

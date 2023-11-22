@@ -1,5 +1,5 @@
 package com.yplatform.dao;
 
-public class UserDAO {
+public interface UserDAO {
     
 }

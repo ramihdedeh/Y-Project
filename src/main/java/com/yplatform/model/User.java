@@ -21,7 +21,7 @@ public class User {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid password format")
     private String password;
 
-     // Constructors
+    // Constructors
 
     public User() {
     }

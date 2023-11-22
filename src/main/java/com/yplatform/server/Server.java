@@ -55,7 +55,7 @@ public class Server {
     public static void main(String[] args) {
         int port = (args.length > 0) ? Integer.parseInt(args[0]) : DEFAULT_PORT;
         Server server = new Server(port);
-        // Register shutdown hook (Ctrl + c to shutdown the server in the console)
+        // Register shutdown hook (Ctrl + c to shut down the server in the console)
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             server.shutdown();
             logger.info("Server is shutting down");

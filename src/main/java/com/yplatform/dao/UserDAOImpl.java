@@ -113,13 +113,7 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    public static void main(String[] args) {
-        UserDAO userDAO = new UserDAOImpl();
-        try {
-            userDAO.addUser(new User(
-                    "f.noun7@gmail.com","Firas","Noun",
-                    new Date(2002,3,17),"firasnoun","123456"));
-    } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }}
+
+    }
+
+

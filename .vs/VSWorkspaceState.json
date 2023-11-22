@@ -1,16 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\data",
-    "\\src",
-    "\\src\\main",
-    "\\src\\main\\java",
-    "\\src\\main\\java\\Client",
-    "\\src\\main\\java\\Client\\models",
-    "\\src\\main\\java\\Client\\Repository",
-    "\\src\\main\\resources",
-    "\\src\\main\\resources\\META_INF"
+    ""
   ],
-  "SelectedNode": "\\src\\main\\java\\Client\\HelloApplication.java",
   "PreviewInSolutionExplorer": false
 }

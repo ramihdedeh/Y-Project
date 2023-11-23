@@ -5,6 +5,7 @@ import com.yplatform.repository.SQLiteDBManager;
 
 import java.sql.*;
 import java.util.Optional;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAOImpl implements UserDAO {
     private Connection connect() throws SQLException {
@@ -16,12 +17,15 @@ public class UserDAOImpl implements UserDAO {
         String sql = "INSERT INTO users (email, first_name, last_name, date_of_birth, username, password) VALUES(?,?,?,?,?,?)";
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // Hash the password before storing it in the database
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getFirstName());
             pstmt.setString(3, user.getLastName());
             pstmt.setDate(4, new java.sql.Date(user.getDateOfBirth().getTime()));
             pstmt.setString(5, user.getUsername());
-            pstmt.setString(6, user.getPassword());
+            pstmt.setString(6, hashedPassword); // Use the hashed password
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new Exception("Error adding user", e);
@@ -113,6 +117,44 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public boolean checkUsernameExists(String username) throws Exception {
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Error checking username existence", e);
+        }
+        return false;
+    }
+
+    public boolean verifyPassword(String username, String hashedPassword) throws Exception {
+        String sql = "SELECT password FROM users WHERE username = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String storedHashedPassword = rs.getString("password");
+                // Compare the hashed password from the front-end with the stored hashed password
+                return storedHashedPassword.equals(hashedPassword);
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Error verifying password", e);
+        }
+        return false;
+    }
 
     }
 

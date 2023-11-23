@@ -13,6 +13,7 @@ module com.example.yplatform {
     //requires jakarta.persistence;
     requires java.validation;
     requires java.sql;
+    requires jBCrypt;
     opens Client to javafx.fxml;
     exports Client;
 }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Client.SignupController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <HBox layoutX="-2.0" layoutY="1.0" prefHeight="395.0" prefWidth="268.0" />
+        <AnchorPane prefHeight="402.0" prefWidth="258.0" style="-fx-background-color: #000000;">
+            <children>
+                <ImageView fitHeight="268.0" fitWidth="268.0" layoutY="55.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" style="-fx-image: #807d6e;">
+                    <image>
+                        <Image url="@y2.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="266.0" layoutY="-2.0" prefHeight="402.0" prefWidth="325.0" style="-fx-background-color: #FFFFFF;">
+            <children>
+
+                <Label layoutX="30.0" layoutY="50.0" prefHeight="17.0" prefWidth="103.0" text="First name">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+                </Label>
+                <Label layoutX="30.0" layoutY="90.0" prefHeight="17.0" prefWidth="103.0" text="Last name">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+                </Label>
+                <Label layoutX="25.0" layoutY="100.0" prefHeight="80.0" prefWidth="103.0" text="Date of birth">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+                </Label>
+                <Label layoutX="30.0" layoutY="140.0" prefHeight="80.0" prefWidth="103.0" text="Username">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+                </Label>
+                <Label layoutX="30.0" layoutY="180.0" prefHeight="80.0" prefWidth="84.0" text="email">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+                </Label>
+                <Label layoutX="30.0" layoutY="220.0" prefHeight="80.0" prefWidth="84.0" text="Password">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+                </Label>
+
+                <TextField fx:id="First_Name" layoutX="129.0" layoutY="50.0" />
+                <TextField fx:id="Last_Name" layoutX="129.0" layoutY="90.0" />
+                <TextField fx:id="Dateof_birth" layoutX="129.0" layoutY="130.0" />
+                <TextField fx:id="username" layoutX="129.0" layoutY="170.0" />
+                <TextField fx:id="email" layoutX="129.0" layoutY="210.0" />
+                <TextField fx:id="password" layoutX="129.0" layoutY="250.0" />
+                <Button fx:id="button_signup" layoutX="102.0" layoutY="320.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="115.0" style="-fx-background-color: #FFFFF; -fx-cursor: hand;" text="Sign up" onAction="#handleSignUpButtonAction" >
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="18.0" />
+                    </font>
+                </Button>
+
+            </children></AnchorPane>
+    </children>
+
+</AnchorPane>

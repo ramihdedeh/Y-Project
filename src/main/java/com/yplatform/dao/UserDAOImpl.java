@@ -155,6 +155,28 @@ public class UserDAOImpl implements UserDAO {
         }
         return false;
     }
+    public String getUsernameById(Long userId) {
+        String username = null;
+        String sql = "SELECT username FROM users WHERE user_id = ?";
+        
+        try (Connection connection = this.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            
+            statement.setLong(1, userId);
+    
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    username = resultSet.getString("username");
+                }
+            }
+    
+        } catch (SQLException e) {
+            // Handle SQL exceptions
+            e.printStackTrace(); // Log the exception or perform other error handling
+        }
+    
+        return username;
+    }
 
     }
 

@@ -18,7 +18,7 @@ public class PostDAOImpl implements PostDAO{
             preparedStatement.setString(1, post.getTitle());
             preparedStatement.setString(2, post.getContent());
             preparedStatement.setLong(3, post.getUserId());
-            preparedStatement.setDate(4, post.getPostDate());
+            preparedStatement.setTimestamp(4, post.getPostDate());
 
             preparedStatement.executeUpdate();
 
@@ -101,7 +101,7 @@ public class PostDAOImpl implements PostDAO{
             preparedStatement.setString(1, post.getTitle());
             preparedStatement.setString(2, post.getContent());
             preparedStatement.setLong(3, post.getUserId());
-            preparedStatement.setDate(4, post.getPostDate());
+            preparedStatement.setTimestamp(4, post.getPostDate());
             preparedStatement.setLong(5, post.getId());
 
             preparedStatement.executeUpdate();
@@ -130,7 +130,7 @@ public class PostDAOImpl implements PostDAO{
                 resultSet.getString("title"),
                 resultSet.getString("content"),
                 resultSet.getLong("user_id"),
-                resultSet.getDate("post_date")
+                resultSet.getTimestamp("post_date")
         );
     }
 
@@ -155,7 +155,7 @@ public class PostDAOImpl implements PostDAO{
                     Post post = new Post();
                     post.setId(resultSet.getLong("post_id"));
                     post.setTitle(resultSet.getString("title"));
-                    post.setPostDate(resultSet.getDate("post_date"));
+                    post.setPostDate(resultSet.getTimestamp("post_date"));
                     post.setContent(resultSet.getString("content"));
                     // Set other properties as needed
                     postsOfInterest.add(post);

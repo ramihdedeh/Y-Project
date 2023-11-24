@@ -5,10 +5,10 @@ import com.yplatform.model.User;
 
 public class UserService {
 
-    private UserDAOImpl userDAO = new UserDAOImpl();
+    private static UserDAOImpl userDAO = new UserDAOImpl();
 
 
-    public boolean addUser(User user) {
+    public static boolean addUser(User user) {
         try {
             // Check if the username already exists in the database
             if (userDAO.checkUsernameExists(user.getUsername())) {
@@ -25,7 +25,7 @@ public class UserService {
         }
     }
 
-    public boolean authenticateUser(String username, String hashedPassword) {
+    public static boolean authenticateUser(String username, String hashedPassword) {
         try {
             if (userDAO.checkUsernameExists(username)) {
                 // If the username exists, proceed to verify the password
@@ -36,6 +36,7 @@ public class UserService {
             }
         } catch (Exception e) {
             // Handle exception, log it, etc.
+
         }
         return false; // Authentication failed
     }

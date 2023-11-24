@@ -1,6 +1,8 @@
 package com.yplatform.dao;
 
 import com.yplatform.model.User;
+
+import java.sql.SQLException;
 import java.util.Optional;
 
 public interface UserDAO {
@@ -18,5 +20,7 @@ public interface UserDAO {
 
     boolean verifyPassword(String username, String password) throws Exception;
 
+    String getUsernameById(Long userId) throws SQLException;
+    
 }
 

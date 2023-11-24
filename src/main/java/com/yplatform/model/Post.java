@@ -1,25 +1,25 @@
 package com.yplatform.model;
-import java.sql.Date;
+import java.sql.Timestamp;
 public class Post {
 
     private Long id;
     private String title;
     private String content;
     private Long user_id;
-    private Date post_date;
+    private Timestamp post_date;
 
     // Constructors
 
     public Post() {
     }
 
-    public Post(String title, String content, Long user_id, Date post_date) {
+    public Post(String title, String content, Long user_id, Timestamp post_date) {
         this.title = title;
         this.content = content;
         this.user_id = user_id;
         this.post_date = post_date;
     }
-    public Post(Long id, String title, String content, Long user_id, Date post_date) {
+    public Post(Long id, String title, String content, Long user_id, Timestamp post_date) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -60,10 +60,10 @@ public class Post {
     public void setUserId(Long user_id) {
         this.user_id = user_id;
     }
-    public Date getPostDate(){
+    public Timestamp getPostDate(){
         return post_date;
     }
-    public void setPostDate(Date post_date) {
+    public void setPostDate(Timestamp post_date) {
         this.post_date = post_date;
     }
 }

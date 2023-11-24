@@ -97,6 +97,7 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    
 <!-- JPA -->
 <dependency>
 	    <groupId>jakarta.persistence</groupId>
@@ -115,13 +116,28 @@
       <artifactId>logback-classic</artifactId>
       <version>1.2.12</version>
     </dependency>
-
+    <!-- Jackson dependencies -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.16.0</version> 
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.16.0</version>
+    </dependency>
+	  <!-- Bean Validation the second one needed to be downloaded by the user from outside source to work, so I added the first one there which seeemed to work-->
+    <dependency>
+    <groupId>de.svenkubiak</groupId>
+    <artifactId>jBCrypt</artifactId>
+    <version>0.4.3</version>
+    </dependency>
       <dependency>
           <groupId>org.mindrot</groupId>
           <artifactId>jbcrypt</artifactId>
           <version>0.4</version>
       </dependency>
-
 
       <dependency>
 		  <groupId>javax.validation</groupId>
@@ -161,7 +177,23 @@
           </execution>
         </executions>
       </plugin>
-
+       <!-- Add the exec-maven-plugin -->
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <!-- Optional configuration to set the main class, used to run server from visual studio-->
+            <configuration>
+                <mainClass>com.yplatform.server.Server</mainClass>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 </project>

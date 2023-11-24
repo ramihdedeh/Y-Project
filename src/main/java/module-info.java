@@ -13,6 +13,8 @@ module com.example.yplatform {
     requires java.validation;
     requires java.sql;
     requires jBCrypt;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
     opens Client to javafx.fxml;
     exports Client;
 }

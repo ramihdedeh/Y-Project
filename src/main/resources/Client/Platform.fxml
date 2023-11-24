@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="Client.PlatformController">
    <children>
       <ImageView fitHeight="86.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -16,18 +16,18 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <ScrollBar orientation="VERTICAL" prefHeight="312.0" prefWidth="14.0" />
-                  <TextArea id="User_post" layoutX="14.0" layoutY="48.0" prefHeight="264.0" prefWidth="280.0" />
-                  <TextArea  id ="New_post" layoutX="17.0" prefHeight="47.0" prefWidth="178.0" />
-                  <Button id="Post_button" layoutX="198.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Post" />
+                  <TextArea fx:id="User_post" layoutX="14.0" layoutY="48.0" prefHeight="264.0" prefWidth="280.0" />
+                  <TextArea  fx:id="New_post" layoutX="17.0" prefHeight="47.0" prefWidth="178.0" />
+                  <Button fx:id="Post_button" layoutX="198.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Post" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <ScrollBar orientation="VERTICAL" prefHeight="312.0" prefWidth="14.0" />
-                  <TextArea id="Messageofinterest" layoutX="13.0" layoutY="49.0" prefHeight="264.0" prefWidth="280.0" />
-                  <TextField id ="Followers" layoutX="16.0" prefHeight="47.0" prefWidth="178.0" />
-                  <Button id="Search_users" layoutX="200.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Search" />
-                  <Button id="Reload_messageofinterest" layoutX="232.0" layoutY="263.0" maxWidth="86.0" minWidth="37.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="37.0" style="-fx-background-color: #3498db; -fx-background-radius: 30; -fx-min-width: 60; -fx-min-height: 30; -fx-max-width: 50; -fx-max-height: 50; -fx-padding: 10;" styleClass="ho" text="Reload" />
+                  <TextArea fx:id="Messageofinterest" layoutX="13.0" layoutY="49.0" prefHeight="264.0" prefWidth="280.0" />
+                  <TextField fx:id="Followers" layoutX="16.0" prefHeight="47.0" prefWidth="178.0" />
+                  <Button fx:id="Search_users" layoutX="200.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Search" />
+                  <Button fx:id="Reload_messageofinterest" layoutX="232.0" layoutY="263.0" maxWidth="86.0" minWidth="37.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="37.0" style="-fx-background-color: #3498db; -fx-background-radius: 30; -fx-min-width: 60; -fx-min-height: 30; -fx-max-width: 50; -fx-max-height: 50; -fx-padding: 10;" styleClass="ho" text="Reload" />
                </children>
             </AnchorPane>
         </items>

@@ -134,10 +134,10 @@ public class ClientHandler implements Runnable {
             try {
                 Long userId = Long.parseLong(tokens[1]);
                 List<Post> userPosts = postDAO.getPostsByUserId(userId);
-    
+
                 // Convert the list of posts to JSON
                 String jsonPosts = PostService.convertPostsListToJson(userPosts);
-    
+
                 // Send JSON response to the client
                 writer.write(jsonPosts);
                 writer.newLine();
@@ -165,7 +165,7 @@ public class ClientHandler implements Runnable {
 
                 // Convert the list of posts to JSON
                 String jsonPosts = PostService.convertPostsListToJson(userPosts);
-    
+
                 // Display posts from followed users to the client
                 writer.write(jsonPosts);
                 writer.newLine();
@@ -193,15 +193,15 @@ public class ClientHandler implements Runnable {
                 String content = tokens[3];
                 String user_id = tokens[4];
                 Long userId = Long.parseLong(user_id);
-    
+
                 Post updatedPost = new Post(postId, title, content, userId, new Timestamp(System.currentTimeMillis()));
-    
+
                 if (PostService.updatePost(updatedPost)) {
                     writer.write("Post updated successfully!");
                 } else {
                     writer.write("Failed to update the post. Please try again.");
                 }
-    
+
                 writer.newLine();
                 writer.flush();
             } catch (NumberFormatException e) {
@@ -217,18 +217,18 @@ public class ClientHandler implements Runnable {
             writer.flush();
         }
     }
-    
+
     private void handleDeletePostCommand(String[] tokens, BufferedWriter writer) throws IOException {
         if (tokens.length == 2) {
             try {
                 Long postId = Long.parseLong(tokens[1]);
-    
+
                 if (PostService.deletePost(postId)) {
                     writer.write("Post deleted successfully!");
                 } else {
                     writer.write("Failed to delete the post. Please try again.");
                 }
-    
+
                 writer.newLine();
                 writer.flush();
             } catch (NumberFormatException e) {

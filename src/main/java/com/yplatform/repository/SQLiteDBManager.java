@@ -26,7 +26,7 @@ public class SQLiteDBManager {
                     + "post_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "title TEXT NOT NULL,"
                     + "content TEXT NOT NULL,"
-                    + "post_date DATE,"
+                    + "post_date TIMESTAMP,"
                     + "user_id INTEGER NOT NULL,"
                     + "FOREIGN KEY (user_id) REFERENCES users(user_id))");
             

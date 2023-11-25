@@ -30,6 +30,13 @@ public class LoginController {
     @FXML
     private TextField password;
 
+    // Inject YClient instance into the controller
+    private Client Client;
+
+    public void setClient(Client Client) {
+        this.Client = Client;
+    }
+
     @FXML
     private void handleSignUpButtonAction(ActionEvent event) {
         try {
@@ -61,6 +68,20 @@ public class LoginController {
 
     @FXML
     private void handleSignInButtonAction(ActionEvent event) {
+        String enteredUsername = username.getText();
+        String enteredPassword = password.getText();
+
+        // Perform user authentication using YClient
+        boolean isAuthenticated = Client.authenticateUser(enteredUsername, enteredPassword);
+
+        if (isAuthenticated) {
+            openPlatformPage();
+        } else {
+            showAlert("Authentication Failed", "Invalid username or password.");
+        }
+    }
+
+    private void openPlatformPage() {
         try {
             // Load the Platform.fxml file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Platform.fxml"));
@@ -83,7 +104,6 @@ public class LoginController {
             showAlert("Error Loading Page", "An error occurred while loading the new page. Please try again.");
         }
     }
-
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

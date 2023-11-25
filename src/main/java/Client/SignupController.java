@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class SignupController {
+
     @FXML
     private TextField username;
     @FXML
@@ -30,29 +31,68 @@ public class SignupController {
 
     @FXML
     private TextField Dateof_birth;
+
+    private Client Client;  // Assuming you have an instance of YClient in your controller
+
+    public void setYClient(Client yClient) {
+        this.Client = Client;
+    }
+
     @FXML
     private void handleSignUpButtonAction(ActionEvent event) {
-        try {
-            // Load the Signup.fxml file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Platform.fxml"));
-            Parent signUpRoot = loader.load();
+        // Collect user input
 
-            // Create a new stage for sign-up
-            Stage signUpStage = new Stage();
-            signUpStage.setTitle("Sign Up");
+        String enteredUsername = username.getText();
+        String enteredEmail = email.getText();
+        String enteredPassword = password.getText();
+        String enteredFirstName = First_Name.getText();
+        String enteredLastName = Last_Name.getText();
+        String enteredDateOfBirth = Dateof_birth.getText();
 
-            // Set the scene with the loaded FXML content
-            signUpStage.setScene(new Scene(signUpRoot));
-
-            // Show the new stage
-            signUpStage.show();
-
-            // Close the current login stage (optional)
-            ((Stage) button_signup.getScene().getWindow()).close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error Loading Page", "An error occurred while loading the new page. Please try again.");
+        // Validate user input (you should customize this based on your requirements)
+        if (enteredUsername.isEmpty() || enteredEmail.isEmpty() || enteredPassword.isEmpty() ||
+                enteredFirstName.isEmpty() || enteredLastName.isEmpty() || enteredDateOfBirth.isEmpty()) {
+            showAlert("Error", "All fields are required");
+            return;
         }
+
+        // we can add more validation logic based on the requirements
+
+        // Send signup information to the server
+        boolean signupSuccessful = sendSignupRequest(enteredUsername, enteredEmail, enteredPassword,
+                enteredFirstName, enteredLastName, enteredDateOfBirth);
+
+        if (signupSuccessful) {
+            showAlert("Success", "Signup successful!");
+
+            // Optionally, you can navigate to the platform page or perform any other necessary actions
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Platform.fxml"));
+                Parent platformRoot = loader.load();
+                Stage platformStage = new Stage();
+                platformStage.setTitle("Platform Page");
+                platformStage.setScene(new Scene(platformRoot));
+                platformStage.show();
+                ((Stage) button_signup.getScene().getWindow()).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "An error occurred while loading the platform page. Please try again.");
+            }
+        } else {
+            showAlert("Error", "Signup failed. Please try again.");
+        }
+    }
+
+    private boolean sendSignupRequest(String username, String email, String password,
+                                      String firstName, String lastName, String dateOfBirth) {
+        // Check if YClient is set
+        if (Client == null) {
+            showAlert("Error", "Client is not set.");
+            return false;
+        }
+
+        // Call the YClient method to send the signup request
+        return Client.sendSignupRequest(username, email, password, firstName, lastName, dateOfBirth);
     }
 
     private void showAlert(String title, String content) {

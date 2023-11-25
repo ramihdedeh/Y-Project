@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
                 String[] tokens = inputLine.split(" ");
                 String command = tokens[0].toUpperCase();
                 switch (command) {
-                    case "POST":
+                    case "POSTMESSAGE":
                         handlePostCommand(tokens, writer);
                         break;
                     case "MYPOSTS":
@@ -122,7 +122,7 @@ public class ClientHandler implements Runnable {
         }
         else {
         // Invalid command format, inform the client
-        writer.write("Invalid POST command format. Usage: POST Title Content User_ID");
+        writer.write("Invalid POSTMESSAGE command format. Usage: POSTMESSAGE Title Content User_ID");
         writer.newLine();
         writer.flush();
         return;

@@ -48,36 +48,48 @@ public class PostService {
                post.getUserId() != null && post.getPostDate() != null;
     }
     // Helper method to convert a list of posts to JSON
-public static String convertPostsListToJson(List<Post> posts) {
-    // Implement JSON conversion logic (using a library like Jackson, Gson, etc.)
-    // This is a simplified example, you may need to adjust based on your JSON library
-    // Here, assuming you have a PostDto class to represent posts in a simplified way
-    List<PostDto> postDtos = posts.stream()
-            .map(post -> new PostDto(post.getTitle(), post.getContent(), post.getPostDate(), userDAO.getUsernameById(post.getUserId())))
-            .collect(Collectors.toList());
+    public static String convertPostsListToJson(List<Post> posts) {
+        // Implement JSON conversion logic (using a library like Jackson, Gson, etc.)
+        // This is a simplified example, you may need to adjust based on your JSON library
+        // Here, assuming you have a PostDto class to represent posts in a simplified way
+        List<PostDto> postDtos = posts.stream()
+                .map(post -> new PostDto(post.getTitle(), post.getContent(), post.getPostDate(), userDAO.getUsernameById(post.getUserId())))
+                .collect(Collectors.toList());
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-        return objectMapper.writeValueAsString(postDtos);
-    } catch (JsonProcessingException e) {
-        e.printStackTrace();
-        // Handle JSON conversion error
-        return "{}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(postDtos);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // Handle JSON conversion error
+            return "{}";
+        }
     }
-}
 
-// PostDto class for simplifying post representation in JSON
-public static class PostDto {
-    private String title;
-    private String content;
-    private Timestamp date;
-    private String author;
+    // PostDto class for simplifying post representation in JSON
+    public static class PostDto {
+        private String title;
+        private String content;
+        private Timestamp date;
+        private String author;
 
-    public PostDto(String title, String content, Timestamp date, String author) {
-        this.title = title;
-        this.content = content;
-        this.date = date;
-        this.author = author;
+        public PostDto(String title, String content, Timestamp date, String author) {
+            this.title = title;
+            this.content = content;
+            this.date = date;
+            this.author = author;
+        }
+        public String getTitle(){
+            return this.title;
+        }
+        public String getContent(){
+            return this.content;
+        }
+        public Timestamp getDate(){
+            return this.date;
+        }
+        public String getAuthor(){
+            return this.author;
+        }
     }
-}
 }

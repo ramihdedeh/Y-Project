@@ -1,22 +1,22 @@
 package com.yplatform;
 
-import com.yplatform.model.Post;
-import com.yplatform.model.User;
+//import com.yplatform.model.Post;
+//import com.yplatform.model.User;
 import com.yplatform.repository.SQLiteDBManager;
-import com.yplatform.dao.PostDAO;
-import com.yplatform.dao.PostDAOImpl;
-import com.yplatform.dao.UserDAOImpl;
-import com.yplatform.service.UserService;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.Set;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+//import com.yplatform.dao.PostDAO;
+//import com.yplatform.dao.PostDAOImpl;
+//import com.yplatform.dao.UserDAOImpl;
+//import com.yplatform.service.UserService;
+//import java.util.List;
+//import java.util.Optional;
+//import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.Set;
+//import java.text.ParseException;
+//import java.text.SimpleDateFormat;
+//import java.util.Date;
 public class DatabaseInitializer {
-    private static final Logger logger = Logger.getLogger(DatabaseInitializer.class.getName());
+    //private static final Logger logger = Logger.getLogger(DatabaseInitializer.class.getName());
     public static void main(String[] args) {
         SQLiteDBManager dbManager = new SQLiteDBManager();
         dbManager.initializeDatabase();

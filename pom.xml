@@ -133,8 +133,7 @@
     <artifactId>jBCrypt</artifactId>
     <version>0.4.3</version>
     </dependency>
-    <!--
-      <dependency>
+    <!--<dependency>
           <groupId>org.mindrot</groupId>
           <artifactId>jbcrypt</artifactId>
           <version>0.4</version>

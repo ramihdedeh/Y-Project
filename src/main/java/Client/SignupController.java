@@ -59,7 +59,7 @@ public class SignupController {
         }
 
         // Send signup information to the server
-        int userId = sendSignupRequest(enteredUsername, enteredEmail, enteredPassword,
+        int userId = Client.sendSignupRequest(enteredUsername, enteredEmail, enteredPassword,
                 enteredFirstName, enteredLastName, enteredDateOfBirth);
 
         if (userId != -1) {
@@ -73,17 +73,6 @@ public class SignupController {
         }
     }
 
-    private int sendSignupRequest(String username, String email, String password,
-                                  String firstName, String lastName, String dateOfBirth) {
-        // Check if Client is set
-        if (Client == null) {
-            showAlert("Error", "Client is not set.");
-            return -1;
-        }
-
-        // Call the Client method to send the signup request
-        return Client.sendSignupRequest(username, email, password, firstName, lastName, dateOfBirth);
-    }
 
     private void loadPlatformPage(int userId) {
         try {

@@ -17,8 +17,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-
 public class LoginController {
 
     @FXML
@@ -29,7 +27,6 @@ public class LoginController {
     private TextField username;
     @FXML
     private TextField password;
-
     // Inject YClient instance into the controller
     private Client Client;
 
@@ -72,45 +69,45 @@ public class LoginController {
         String enteredPassword = password.getText();
 
         // Perform user authentication using YClient
-        boolean isAuthenticated = Client.authenticateUser(enteredUsername, enteredPassword);
+        int userId = Client.authenticateUser(enteredUsername, enteredPassword);
 
-        if (isAuthenticated) {
-            openPlatformPage();
+        if (userId != -1) {
+            loadPlatformPage(userId);
         } else {
             showAlert("Authentication Failed", "Invalid username or password.");
         }
     }
 
-    private void openPlatformPage() {
-        try {
-            // Load the Platform.fxml file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Platform.fxml"));
-            Parent platformRoot = loader.load();
 
-            // Create a new stage for the platform page
-            Stage platformStage = new Stage();
-            platformStage.setTitle("Platform Page");
-
-            // Set the scene with the loaded FXML content
-            platformStage.setScene(new Scene(platformRoot));
-
-            // Show the new stage
-            platformStage.show();
-
-            // Close the current login stage (optional)
-            ((Stage) button_login.getScene().getWindow()).close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error Loading Page", "An error occurred while loading the new page. Please try again.");
+        private void showAlert (String title, String content){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setContentText(content);
+            alert.showAndWait();
         }
+
+        public void loadPlatformPage ( int userId){
+            try {
+                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("/Client/Platform.fxml"));
+                Parent root = loader.load();
+
+                PlatformController platformController = loader.getController();
+                platformController.setUserId(userId);
+
+                Scene scene = new Scene(root);
+
+                Stage stage = (Stage) root.getScene().getWindow(); // Assuming you're using the same stage for now
+
+                stage.setScene(scene);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle exception (e.g., log, show an error message)
+            }
+        }
+
     }
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-}
+
 
 
 

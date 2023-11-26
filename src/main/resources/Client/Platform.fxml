@@ -4,33 +4,40 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="Client.PlatformController">
-   <children>
-      <ImageView fitHeight="86.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@y2.png" />
-         </image>
-      </ImageView>
-      <SplitPane dividerPositions="0.4983277591973244" prefHeight="319.0" prefWidth="600.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <ScrollBar orientation="VERTICAL" prefHeight="312.0" prefWidth="14.0" />
-                  <TextArea fx:id="User_post" layoutX="14.0" layoutY="48.0" prefHeight="264.0" prefWidth="280.0" />
-                  <TextArea  fx:id="New_post" layoutX="17.0" prefHeight="47.0" prefWidth="178.0" />
-                  <Button fx:id="Post_button" layoutX="198.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Post" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <ScrollBar orientation="VERTICAL" prefHeight="312.0" prefWidth="14.0" />
-                  <TextArea fx:id="Messageofinterest" layoutX="13.0" layoutY="49.0" prefHeight="264.0" prefWidth="280.0" />
-                  <TextField fx:id="Followers" layoutX="16.0" prefHeight="47.0" prefWidth="178.0" />
-                  <Button fx:id="Search_users" layoutX="200.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Search" />
-                  <Button fx:id="Reload_messageofinterest" layoutX="232.0" layoutY="263.0" maxWidth="86.0" minWidth="37.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="37.0" style="-fx-background-color: #3498db; -fx-background-radius: 30; -fx-min-width: 60; -fx-min-height: 30; -fx-max-width: 50; -fx-max-height: 50; -fx-padding: 10;" styleClass="ho" text="Reload" />
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </children>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.PlatformController">
+
+    <children>
+        <ImageView fitHeight="86.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@y2.png" />
+            </image>
+        </ImageView>
+        <SplitPane dividerPositions="0.4983277591973244" prefHeight="319.0" prefWidth="600.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <TextField fx:id="New_post" layoutX="4.0" layoutY="3.0" prefHeight="31.0" prefWidth="187.0" />
+                        <TextArea fx:id="User_post" layoutY="48.0" prefHeight="264.0" prefWidth="295.0" />
+                        <Button fx:id="Post_button" layoutX="198.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Post" onAction="#handlePostButtonAction"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <!-- Add the VBox section here -->
+                        <VBox layoutX="1.0" layoutY="50.0" prefHeight="264.0" prefWidth="295.0">
+                            <TextArea fx:id="Messageofinterest" prefHeight="221.0" prefWidth="295.0" />
+                            <FlowPane fx:id="UserPane" prefWidth="295.0" />
+                            <HBox spacing="10" />
+                            <HBox spacing="10" />
+                             <Button fx:id="Reload_messageofinterest" maxHeight="68.0" maxWidth="60.0" minWidth="37.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="60.0" style="-fx-background-color: #3498db; -fx-background-radius: 30; -fx-min-width: 60; -fx-min-height: 30; -fx-max-width: 50; -fx-max-height: 50; -fx-padding: 10;" styleClass="ho" text="Reload" onAction="#handleReloadMessageOfInterest" />
+                        </VBox>
+                          <Button fx:id="Search_users" layoutX="223.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #3498db;" text="Search" onAction="#handleSearchUsersButton" />
+                          <Button fx:id="AddFollowerButton" layoutX="-2.0" layoutY="2.0" onAction="#handleAddFollowerButton" prefHeight="19.0" prefWidth="87.0" style="-fx-background-color: #3498db;" text="Add Follower" />
+                          <Button fx:id="RemoveFollowerButton" layoutX="85.0" layoutY="2.0" onAction="#handleRemoveFollowerButton" prefHeight="19.0" prefWidth="107.0" style="-fx-background-color: #e74c3c;" text="Remove Follower" />
+                          <TextField fx:id="Followers" layoutX="-2.0" layoutY="25.0" prefHeight="25.0" prefWidth="194.0" />
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
 </VBox>

@@ -148,36 +148,36 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
-        <configuration>
-          <source>11</source>
-          <target>11</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.8</version>
-        <executions>
-          <execution>
-            <!-- Default configuration for running with: mvn clean javafx:run -->
-            <id>default-cli</id>
+        <plugin>
+        <!--To run the client: mvn clean javafx:run-->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
             <configuration>
-              <mainClass>com.example.yplatform/Client.HelloApplication</mainClass>
-              <launcher>app</launcher>
-              <jlinkZipName>app</jlinkZipName>
-              <jlinkImageName>app</jlinkImageName>
-              <noManPages>true</noManPages>
-              <stripDebug>true</stripDebug>
-              <noHeaderFiles>true</noHeaderFiles>
+                <source>11</source>
+                <target>11</target>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-       <!-- Add the exec-maven-plugin -->
+        </plugin>
+        <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <executions>
+                <execution>
+                    <id>default-cli</id>
+                    <configuration>
+                        <mainClass>Client.HelloApplication</mainClass>
+                        <launcher>app</launcher>
+                        <jlinkZipName>app</jlinkZipName>
+                        <jlinkImageName>app</jlinkImageName>
+                        <noManPages>true</noManPages>
+                        <stripDebug>true</stripDebug>
+                        <noHeaderFiles>true</noHeaderFiles>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <!--To run the server:mvn clean compile exec:java-->
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -189,7 +189,6 @@
                     </goals>
                 </execution>
             </executions>
-            <!-- Optional configuration to set the main class, used to run server from visual studio-->
             <configuration>
                 <mainClass>com.yplatform.server.Server</mainClass>
             </configuration>

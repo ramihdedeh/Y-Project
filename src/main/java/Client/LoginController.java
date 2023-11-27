@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -26,12 +27,25 @@ public class LoginController {
     @FXML
     private TextField username;
     @FXML
-    private TextField password;
-    // Inject YClient instance into the controller
-    private Client Client;
+    private PasswordField password;
 
-    public void setClient(Client Client) {
-        this.Client = Client;
+
+    // Inject YClient instance into the controller
+    private Client client;
+
+    public LoginController() {
+        try {
+            // Assuming your server is running on localhost and port 8000
+            client = new Client("localhost", 8000);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error message)
+        }
+    }
+
+    // Add a setter method for the Client
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @FXML
@@ -68,17 +82,46 @@ public class LoginController {
         String enteredUsername = username.getText();
         String enteredPassword = password.getText();
 
-        // Perform user authentication using YClient
-        int userId = Client.authenticateUser(enteredUsername, enteredPassword);
+        // Perform user authentication using Client
+        int userId = authenticateUser(enteredUsername, enteredPassword);
 
         if (userId != -1) {
             loadPlatformPage(userId);
         } else {
-            showAlert("Authentication Failed", "Invalid username or password.");
+            showAlert("Authentication Failed", "not a user");
         }
     }
 
+    // Add this method to handle authentication using the Client instance
+    private int authenticateUser(String username, String password) {
+        try {
+            // Construct the authentication request
+            String authenticationRequest = "LOGIN " + username + " " + password;
 
+            // Send the request to the server
+            client.send(authenticationRequest);
+
+            // Receive the response from the server
+            String response = client.receive();
+
+            // Check if the authentication was successful based on the response
+            if ("Login successful.".equals(response)) {
+                // Parse and return the user ID from the server response
+                return Integer.parseInt(client.receive());
+            } else {
+                // Authentication failed
+                return -1;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., log, show an error message)
+            return -1; // Authentication failed due to an exception
+        }
+
+    }
+
+    /* //////////////////////////////////////////////////////////////////////////////////////////////////////// */
         private void showAlert (String title, String content){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(title);
@@ -93,9 +136,7 @@ public class LoginController {
 
                 PlatformController platformController = loader.getController();
                 platformController.setUserId(userId);
-
                 Scene scene = new Scene(root);
-
                 Stage stage = (Stage) root.getScene().getWindow(); // Assuming you're using the same stage for now
 
                 stage.setScene(scene);
@@ -107,6 +148,7 @@ public class LoginController {
         }
 
     }
+
 
 
 

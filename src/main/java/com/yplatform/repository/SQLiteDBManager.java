@@ -19,12 +19,13 @@ public class SQLiteDBManager {
                     + "last_name TEXT,"
                     + "date_of_birth DATE,"
                     + "username TEXT NOT NULL,"
+                    + "salt VARCHAR(255) NOT NULL,"
                     + "password TEXT NOT NULL)");
 
             // Create posts table
             statement.execute("CREATE TABLE IF NOT EXISTS posts ("
                     + "post_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + "title TEXT NOT NULL,"
+                    //+ "title TEXT NOT NULL,"
                     + "content TEXT NOT NULL,"
                     + "post_date TIMESTAMP,"
                     + "user_id INTEGER NOT NULL,"

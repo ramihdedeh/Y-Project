@@ -13,12 +13,12 @@ public class PostDAOImpl implements PostDAO{
     public void createPost(Post post) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO posts (title, content, user_id, post_date) VALUES (?, ?, ?, ?)")) {
+                     "INSERT INTO posts (content, user_id, post_date) VALUES (?, ?, ?)")) {
 
-            preparedStatement.setString(1, post.getTitle());
-            preparedStatement.setString(2, post.getContent());
-            preparedStatement.setLong(3, post.getUserId());
-            preparedStatement.setTimestamp(4, post.getPostDate());
+            //preparedStatement.setString(1, post.getTitle());
+            preparedStatement.setString(1, post.getContent());
+            preparedStatement.setLong(2, post.getUserId());
+            preparedStatement.setTimestamp(3, post.getPostDate());
 
             preparedStatement.executeUpdate();
 
@@ -96,13 +96,13 @@ public class PostDAOImpl implements PostDAO{
     public void updatePost(Post post) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "UPDATE posts SET title = ?, content = ?, user_id = ?, post_date = ? WHERE post_id = ?")) {
+                     "UPDATE posts SET content = ?, user_id = ?, post_date = ? WHERE post_id = ?")) {
 
-            preparedStatement.setString(1, post.getTitle());
-            preparedStatement.setString(2, post.getContent());
-            preparedStatement.setLong(3, post.getUserId());
-            preparedStatement.setTimestamp(4, post.getPostDate());
-            preparedStatement.setLong(5, post.getId());
+            //preparedStatement.setString(1, post.getTitle());
+            preparedStatement.setString(1, post.getContent());
+            preparedStatement.setLong(2, post.getUserId());
+            preparedStatement.setTimestamp(3, post.getPostDate());
+            preparedStatement.setLong(4, post.getId());
 
             preparedStatement.executeUpdate();
 
@@ -127,7 +127,7 @@ public class PostDAOImpl implements PostDAO{
     private Post createPostFromResultSet(ResultSet resultSet) throws SQLException {
         return new Post(
                 resultSet.getLong("post_id"),
-                resultSet.getString("title"),
+                //resultSet.getString("title"),
                 resultSet.getString("content"),
                 resultSet.getLong("user_id"),
                 resultSet.getTimestamp("post_date")
@@ -154,7 +154,7 @@ public class PostDAOImpl implements PostDAO{
                 while (resultSet.next()) {
                     Post post = new Post();
                     post.setId(resultSet.getLong("post_id"));
-                    post.setTitle(resultSet.getString("title"));
+                    //post.setTitle(resultSet.getString("title"));
                     post.setPostDate(resultSet.getTimestamp("post_date"));
                     post.setContent(resultSet.getString("content"));
                     // Set other properties as needed

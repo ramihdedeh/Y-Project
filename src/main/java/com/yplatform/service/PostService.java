@@ -43,7 +43,7 @@ public class PostService {
 
     private static boolean isValidPost(Post post) {
         return post != null &&
-               post.getTitle() != null && !post.getTitle().isEmpty() &&
+               //post.getTitle() != null && !post.getTitle().isEmpty() &&
                post.getContent() != null && !post.getContent().isEmpty() &&
                post.getUserId() != null && post.getPostDate() != null;
     }
@@ -53,7 +53,7 @@ public class PostService {
         // This is a simplified example, you may need to adjust based on your JSON library
         // Here, assuming you have a PostDto class to represent posts in a simplified way
         List<PostDto> postDtos = posts.stream()
-                .map(post -> new PostDto(post.getTitle(), post.getContent(), post.getPostDate(), userDAO.getUsernameById(post.getUserId())))
+                .map(post -> new PostDto(/*post.getTitle(),*/ post.getContent(), post.getPostDate(), userDAO.getUsernameById(post.getUserId())))
                 .collect(Collectors.toList());
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -68,20 +68,20 @@ public class PostService {
 
     // PostDto class for simplifying post representation in JSON
     public static class PostDto {
-        private String title;
+        //private String title;
         private String content;
         private Timestamp date;
         private String author;
 
-        public PostDto(String title, String content, Timestamp date, String author) {
-            this.title = title;
+        public PostDto(/*String title,*/ String content, Timestamp date, String author) {
+            //this.title = title;
             this.content = content;
             this.date = date;
             this.author = author;
         }
-        public String getTitle(){
-            return this.title;
-        }
+        //public String getTitle(){
+        //    return this.title;
+        //}
         public String getContent(){
             return this.content;
         }

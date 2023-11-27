@@ -1,5 +1,6 @@
 package com.yplatform.server;
 
+import com.almasb.fxgl.app.SystemActions;
 import com.yplatform.dao.PostDAO;
 import com.yplatform.dao.UserDAO;
 import com.yplatform.dao.UserRelationshipDAO;
@@ -44,6 +45,8 @@ public class ClientHandler implements Runnable {
             // Handle client communication here
             // You can use reader and writer to send/receive messages
             String inputLine;
+            //System.out.println("Arrived at Client Handler.");
+            //System.out.println(reader.readLine());
             while ((inputLine = reader.readLine()) != null) {
                 String[] tokens = inputLine.split(" ");
                 String command = tokens[0].toUpperCase();
@@ -93,16 +96,16 @@ public class ClientHandler implements Runnable {
 
     // Add methods for handling user registration, login, and other functionalities
     private void handlePostCommand(String[] tokens, BufferedWriter writer) throws IOException {
-        if (tokens.length == 4){
-            String title = tokens[1];
-            String content = tokens[2];
-            String user_id = tokens[3];
+        if (tokens.length == 3){
+            //String title = tokens[1];
+            String content = tokens[1];
+            String user_id = tokens[2];
         // Check if user_id is a valid long value
             try {
                 Long userId = Long.parseLong(user_id);
 
                 // Create a Post object with the extracted information
-                Post post = new Post(title, content, userId, new Timestamp(System.currentTimeMillis()));
+                Post post = new Post(content, userId, new Timestamp(System.currentTimeMillis()));
 
                 // Use the PostService to add the post
                 if (PostService.addPost(post)) {
@@ -122,7 +125,7 @@ public class ClientHandler implements Runnable {
         }
         else {
         // Invalid command format, inform the client
-        writer.write("Invalid POSTMESSAGE command format. Usage: POSTMESSAGE Title Content User_ID");
+        writer.write("Invalid POSTMESSAGE command format. Usage: POSTMESSAGE Content User_ID");
         writer.newLine();
         writer.flush();
         return;
@@ -186,15 +189,15 @@ public class ClientHandler implements Runnable {
         }
     }
     private void handleUpdatePostCommand(String[] tokens, BufferedWriter writer) throws IOException {
-        if (tokens.length == 5) {
+        if (tokens.length == 4) {
             try {
                 Long postId = Long.parseLong(tokens[1]);
-                String title = tokens[2];
-                String content = tokens[3];
-                String user_id = tokens[4];
+                //String title = tokens[2];
+                String content = tokens[2];
+                String user_id = tokens[3];
                 Long userId = Long.parseLong(user_id);
 
-                Post updatedPost = new Post(postId, title, content, userId, new Timestamp(System.currentTimeMillis()));
+                Post updatedPost = new Post(postId, content, userId, new Timestamp(System.currentTimeMillis()));
 
                 if (PostService.updatePost(updatedPost)) {
                     writer.write("Post updated successfully!");
@@ -212,7 +215,7 @@ public class ClientHandler implements Runnable {
             }
         } else {
             // Invalid command format, inform the client
-            writer.write("Invalid UPDATEPOST command format. Usage: UPDATEPOST Post_ID Title Content User_ID");
+            writer.write("Invalid UPDATEPOST command format. Usage: UPDATEPOST Post_ID Content User_ID");
             writer.newLine();
             writer.flush();
         }
@@ -250,10 +253,7 @@ public class ClientHandler implements Runnable {
             String username = tokens[1];
             String password = tokens[2]; // The plaintext password from the user
 
-            // Hash the password using BCrypt
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
-            if (UserService.authenticateUser(username, hashedPassword)){
+            if (UserService.authenticateUser(username, password)){
                 writer.write("Login successful.\n");
             } else {
                 writer.write("Login failed: Incorrect username or password.\n");
@@ -278,10 +278,11 @@ public class ClientHandler implements Runnable {
             Date dateOfBirth = dateFormat.parse(dateOfBirthString);
 
             // Hash the password using BCrypt
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            String salt = BCrypt.gensalt();
+            String hashedPassword = BCrypt.hashpw(password, salt);
 
             // Create a new user object
-            User user = new User(email, firstName, lastName, dateOfBirth, username, hashedPassword);
+            User user = new User(email, firstName, lastName, dateOfBirth, username, salt, hashedPassword);
 
             // Add the user to the database
             if (UserService.addUser(user)) {

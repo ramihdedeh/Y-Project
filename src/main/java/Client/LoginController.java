@@ -24,10 +24,11 @@ public class LoginController {
     private PasswordField password;
 
 
-    // Inject YClient instance into the controller
+     // Inject YClient instance into the controller
     private Client client;
 
     public LoginController() {
+        // Initialize client in the constructor
         try {
             // Assuming your server is running on localhost and port 8000
             client = new Client("localhost", 8000);
@@ -41,7 +42,7 @@ public class LoginController {
     public void setClient(Client client) {
         this.client = client;
     }
-
+ 
     @FXML
     private void handleSignUpButtonAction(ActionEvent event) {
         try {
@@ -89,12 +90,17 @@ public class LoginController {
     // Add this method to handle authentication using the Client instance
     private int authenticateUser(String username, String password) {
         try {
+            client = new Client("localhost", 8000);
+            if (client == null) {
+                System.err.println("Client is not properly initialized.");
+                return -1;
+            }
             // Construct the authentication request
             String authenticationRequest = "LOGIN " + username + " " + password;
-
+            
             // Send the request to the server
             client.send(authenticationRequest);
-
+            System.out.println(authenticationRequest);
 
             // Receive the response from the server
             String response = client.receive();

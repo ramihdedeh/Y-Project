@@ -14,18 +14,20 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void addUser(User user) throws Exception {
-        String sql = "INSERT INTO users (email, first_name, last_name, date_of_birth, username, password) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO users (email, first_name, last_name, date_of_birth, username, salt, password) VALUES(?,?,?,?,?,?,?)";
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             // Hash the password before storing it in the database
-            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            String salt = BCrypt.gensalt();
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), salt);
 
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getFirstName());
             pstmt.setString(3, user.getLastName());
             pstmt.setDate(4, new java.sql.Date(user.getDateOfBirth().getTime()));
             pstmt.setString(5, user.getUsername());
-            pstmt.setString(6, hashedPassword); // Use the hashed password
+            pstmt.setString(6, salt);
+            pstmt.setString(7, hashedPassword); // Use the hashed password
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new Exception("Error adding user", e);
@@ -48,6 +50,7 @@ public class UserDAOImpl implements UserDAO {
                         rs.getString("last_name"),
                         new Date(rs.getLong("date_of_birth")), // Assuming the date is stored as a long
                         rs.getString("username"),
+                        rs.getString("salt"),
                         rs.getString("password")
                 );
                 user.setId(rs.getLong("user_id"));
@@ -75,6 +78,7 @@ public class UserDAOImpl implements UserDAO {
                         rs.getString("last_name"),
                         new Date(rs.getLong("date_of_birth")), // Assuming the date is stored as a long
                         rs.getString("username"),
+                        rs.getString("salt"),
                         rs.getString("password")
                 );
                 user.setId(rs.getLong("user_id"));
@@ -88,7 +92,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void updateUser(User user) throws Exception {
-        String sql = "UPDATE users SET first_name = ?, last_name = ?, date_of_birth = ?, username = ?, password = ? WHERE email = ?";
+        String sql = "UPDATE users SET first_name = ?, last_name = ?, date_of_birth = ?, username = ?, salt = ?, password = ? WHERE email = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -96,8 +100,9 @@ public class UserDAOImpl implements UserDAO {
             pstmt.setString(2, user.getLastName());
             pstmt.setDate(3, new java.sql.Date(user.getDateOfBirth().getTime()));
             pstmt.setString(4, user.getUsername());
-            pstmt.setString(5, user.getPassword());
-            pstmt.setString(6, user.getEmail());
+            pstmt.setString(5, user.getSalt());
+            pstmt.setString(6, user.getPassword());
+            pstmt.setString(7, user.getEmail());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new Exception("Error updating user", e);

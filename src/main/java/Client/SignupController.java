@@ -34,10 +34,19 @@ public class SignupController {
     private TextField Dateof_birth;
     private Timestamp timestamp;
 
-    private Client Client;  // Assuming you have an instance of YClient in your controller
+    private Client client;
 
-    public void setClient(Client Client) {
-        this.Client = Client;
+    public SignupController() {
+        try {
+            // Assuming your server is running on localhost and port 8000
+            client = new Client("localhost", 8000);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error message)
+        }
+    }
+    public void setClient(Client client) {
+        this.client = client;
     }
 
 
@@ -59,7 +68,7 @@ public class SignupController {
         }
 
         // Send signup information to the server
-        int userId = Client.sendSignupRequest(enteredUsername, enteredEmail, enteredPassword,
+        int userId = sendSignupRequest(enteredUsername, enteredEmail, enteredPassword,
                 enteredFirstName, enteredLastName, enteredDateOfBirth);
 
         if (userId != -1) {
@@ -72,7 +81,35 @@ public class SignupController {
             showAlert("Error", "Signup failed. Please try again.");
         }
     }
+    public int sendSignupRequest(String username, String email, String password,
+                                 String firstName, String lastName, String dateOfBirth) {
+        try {
+            // Construct the signup request
+            String signupRequest = "SIGN UP " + username + " " + email + " " + password +
+                    " " + firstName + " " + lastName + " " + dateOfBirth + "\n";
 
+            // Send the request to the server
+            client.send(signupRequest);
+
+            // Receive the response from the server
+            String response = client.receive();
+
+            // Check if the signup was successful based on the response
+            if ("User added successfully".equals(response)) {
+                // Parse and return the user ID from the server response
+                return Integer.parseInt(client.receive());
+            } else {
+                // Signup failed
+                return -1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., log, show an error message)
+            return -1; // Signup failed due to an exception
+        }
+    }
+
+/* //////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 
     private void loadPlatformPage(int userId) {
         try {

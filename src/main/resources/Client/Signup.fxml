@@ -56,7 +56,7 @@
                 <TextField fx:id="Dateof_birth" layoutX="129.0" layoutY="130.0" />
                 <TextField fx:id="username" layoutX="129.0" layoutY="170.0" />
                 <TextField fx:id="email" layoutX="129.0" layoutY="210.0" />
-                <TextField fx:id="password" layoutX="129.0" layoutY="250.0" />
+                <PasswordField fx:id="password" layoutX="129.0" layoutY="250.0" />
                 <Button fx:id="button_signup" layoutX="115.0" layoutY="300.0" mnemonicParsing="false" onAction="#handleSignUpButtonAction" prefHeight="34.0" prefWidth="103.0" style="-fx-background-color: #FFFFF; -fx-cursor: hand;" text="Sign up">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="18.0" />

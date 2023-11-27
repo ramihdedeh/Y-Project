@@ -19,7 +19,7 @@
             <ImageView fitHeight="150.0" fitWidth="188.0" layoutX="87.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@lock.png" />
             </ImageView>
-            <TextField fx:id="password" layoutX="154.0" layoutY="214.0" prefHeight="25.0" prefWidth="134.0" />
+            <PasswordField fx:id="password" layoutX="154.0" layoutY="214.0" prefHeight="25.0" prefWidth="134.0" />
             <Button fx:id="button_login" layoutX="123.0" layoutY="281.0" mnemonicParsing="false" opacity="0.78" prefHeight="25.0" prefWidth="89.0" style="-fx-background-color: #0000FF; -fx-text-fill: #FFFFFF;" text="Sign in!" onAction="#handleSignInButtonAction" />
             <TextField fx:id="username" layoutX="154.0" layoutY="165.0" prefHeight="25.0" prefWidth="134.0" />
             <Label layoutX="24.0" layoutY="169.0" prefHeight="17.0" prefWidth="109.0" text="Username">

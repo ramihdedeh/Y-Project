@@ -35,24 +35,29 @@ public class Server {
         isRunning = false;
         executorService.shutdown();
     }
-    public void start() {
+    public void start() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             logger.info("Server is running and listening on port " + port);
 
             while (isRunning) {
-                try (Socket clientSocket = serverSocket.accept()) {
-                    // Use the executor service to handle client connection
+                Socket clientSocket = null;
+                try {
+                    clientSocket = serverSocket.accept();
                     executorService.submit(new ClientHandler(clientSocket, userDAO, postDAO, userRelationshipDAO));
                 } catch (IOException e) {
                     logger.log(Level.SEVERE, "Error accepting client connection:", e);
+                    if (clientSocket != null && !clientSocket.isClosed()) {
+                        try {
+                            clientSocket.close();
+                        } catch (IOException ex) {
+                            logger.log(Level.SEVERE, "Error closing client socket:", ex);
+                        }
+                    }
                 }
             }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error in the server:", e);
-            isRunning = false;
         }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int port = (args.length > 0) ? Integer.parseInt(args[0]) : DEFAULT_PORT;
         Server server = new Server(port);
         // Register shutdown hook (Ctrl + c to shut down the server in the console)

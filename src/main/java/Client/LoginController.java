@@ -10,14 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+
 public class LoginController {
 
     @FXML
@@ -100,6 +94,7 @@ public class LoginController {
 
             // Send the request to the server
             client.send(authenticationRequest);
+
 
             // Receive the response from the server
             String response = client.receive();

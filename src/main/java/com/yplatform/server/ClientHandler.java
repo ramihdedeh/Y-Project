@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Arrays;
 
 public class ClientHandler implements Runnable {
 
@@ -96,10 +97,14 @@ public class ClientHandler implements Runnable {
 
     // Add methods for handling user registration, login, and other functionalities
     private void handlePostCommand(String[] tokens, BufferedWriter writer) throws IOException {
-        if (tokens.length == 3){
+        if (tokens.length >= 3){
             //String title = tokens[1];
-            String content = tokens[1];
-            String user_id = tokens[2];
+            String user_id = tokens[1];
+
+            // Concatenate the remaining tokens to reconstruct the content
+            String content = String.join(" ", Arrays.copyOfRange(tokens, 2, tokens.length));
+
+
             // Check if user_id is a valid long value
             try {
                 Long userId = Long.parseLong(user_id);
@@ -141,6 +146,7 @@ public class ClientHandler implements Runnable {
                 // Convert the list of posts to JSON
                 String jsonPosts = PostService.convertPostsListToJson(userPosts);
 
+                writer.write("Success\n");
                 // Send JSON response to the client
                 writer.write(jsonPosts);
                 writer.newLine();
@@ -252,8 +258,10 @@ public class ClientHandler implements Runnable {
         if (tokens.length == 3) {
             String username = tokens[1];
             String password = tokens[2]; // The plaintext password from the user
-            if (UserService.authenticateUser(username, password)){
+            long user_id = UserService.authenticateUser(username, password);
+            if (user_id != -1){
                 writer.write("Login successful.\n");
+                writer.write(Long.toString(user_id) + "\n");
                 writer.flush(); // Make sure to flush the stream
                 return username; // Return the username if authenticated
             } else {
@@ -282,19 +290,24 @@ public class ClientHandler implements Runnable {
                 Date dateOfBirth = dateFormat.parse(dateOfBirthString);
                 //String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
                 User user = new User(email, firstName, lastName, dateOfBirth, username, password);
-
-                if (UserService.addUser(user)) {
-                    writer.write("User added successfully.");
+                long user_id = UserService.addUser(user);
+                if (user_id != -1) {
+                    writer.write("User added successfully.\n");
+                    writer.write(Long.toString(user_id) + "\n");
+                    writer.flush();
                     return username;
                 } else {
-                    writer.write("User could not be added.");
+                    writer.write("User could not be added.\n");
+                    writer.flush();
                     return "";
                 }
             } catch (ParseException e) {
                 writer.write("Invalid date format. Please use the format yyyy-MM-dd.\n");
+                writer.flush();
             }
         } else {
             writer.write("Invalid number of arguments.\n");
+            writer.flush();
         }
         writer.flush();
         return "";

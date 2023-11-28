@@ -36,15 +36,6 @@ public class SignupController {
 
     private Client client;
 
-    public SignupController() {
-        try {
-            // Assuming your server is running on localhost and port 8000
-            client = new Client("localhost", 8000);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle the exception (e.g., show an error message)
-        }
-    }
     public void setClient(Client client) {
         this.client = client;
     }
@@ -70,23 +61,23 @@ public class SignupController {
         }
 
         // Send signup information to the server
-        String userId = sendSignupRequest(enteredEmail,enteredFirstName, enteredLastName, enteredDateOfBirth,
+        int userId = sendSignupRequest(enteredEmail,enteredFirstName, enteredLastName, enteredDateOfBirth,
                 enteredUsername,enteredPassword);
 
-        if (!userId.isEmpty()) {
+        if (userId != -1) {
             showAlert("Success", "Signup successful!");
 
             // Optionally, you can navigate to the platform page or perform any other necessary actions
-            loadPlatformPage(Integer.parseInt(userId));
+            loadPlatformPage(userId);
 
         } else {
             showAlert("Error", "Signup failed. Please try again.");
         }
     }
-    public String sendSignupRequest(String email, String firstName, String lastName, String dateOfBirth,
+    public Integer sendSignupRequest(String email, String firstName, String lastName, String dateOfBirth,
                                  String username, String password) throws IOException {
-        client = new Client("localhost", 8000);
         try {
+            client = new Client("localhost", 8000);
             String signupRequest = "SIGNUP " + email + " " + firstName + " " + lastName + " " + dateOfBirth +
                     " " + username + " " + password + "\n";
             client.send(signupRequest);
@@ -94,13 +85,18 @@ public class SignupController {
             String response = client.receive();
             if ("User added successfully.".equals(response)) {
                 // Assuming server sends the user ID after successful signup
-                return username;
+                String user_id_r = client.receive();
+                System.out.println(user_id_r);
+                int userId = Integer.parseInt(user_id_r);
+                client.close();
+                return userId;
             } else {
-                return "";
+                client.close();
+                return -1;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return "";
+            return -1;
         }
     }
 
@@ -116,6 +112,7 @@ public class SignupController {
             // Access the controller and set the user ID
             PlatformController platformController = loader.getController();
             platformController.setUserId(userId);
+            platformController.initialize(null, null);
 
             // Create a new stage for the platform page
             Stage platformStage = new Stage();

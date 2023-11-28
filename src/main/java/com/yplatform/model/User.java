@@ -26,22 +26,25 @@ public class User {
 
     public User() {
     }
+    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.username = username;
+        this.password = password;
+    }
 
-    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String salt, String password) {
+    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String salt, String hashedPassword) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.username = username;
         this.salt = salt;
-        this.password = password;
+        this.password = hashedPassword;
     }
 
-    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String salt, String hashedPassword) {
-    }
-
-    public User(String firstName, String lastName, Date dateOfBirth, String username, String email, String salt, String hashedPassword) {
-    }
 
     // Getters and Setters
 

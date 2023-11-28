@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+
 public class LoginController {
 
     @FXML
@@ -65,35 +66,40 @@ public class LoginController {
         String enteredPassword = password.getText();
 
         // Perform user authentication using Client
-        String authenticatedUsername = authenticateUser(enteredUsername, enteredPassword);
+        int authenticatedUserId = authenticateUser(enteredUsername, enteredPassword);
 
-        if (!authenticatedUsername.isEmpty()) {
-            loadPlatformPage(authenticatedUsername);
+        if (authenticatedUserId != -1) {
+            //System.out.println(authenticatedUserId);
+            loadPlatformPage(authenticatedUserId);
         } else {
             showAlert("Authentication Failed", "Incorrect username or password");
         }
     }
 
     // Modified method to handle authentication
-    private String authenticateUser(String username, String password) {
+    private Integer authenticateUser(String username, String password) {
         try {
             client = new Client("localhost", 8000);
             if (client == null) {
                 System.err.println("Client is not properly initialized.");
-                return "";
+                return -1;
             }
 
             client.send("LOGIN " + username + " " + password);
             String response = client.receive();
 
             if ("Login successful.".equals(response)) {
-                return client.receive(); // Receive username if successful
+                String user_id_r = client.receive();
+                int user_id = Integer.parseInt(user_id_r);
+                client.close();
+                return user_id;
             } else {
-                return ""; // Authentication failed
+                client.close();
+                return -1; // Authentication failed
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return ""; // Authentication failed due to an exception
+            return -1; // Authentication failed due to an exception
         }
     }
 
@@ -104,17 +110,27 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    public void loadPlatformPage(String username) {
+    public void loadPlatformPage(int userID) {
         try {
             FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("/Client/Platform.fxml"));
             Parent root = loader.load();
 
+            // Access the controller and set the user ID
             PlatformController platformController = loader.getController();
-            platformController.setAuthenticatedUsername(username); // Set username instead of userId
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) root.getScene().getWindow();
+            platformController.setUserId(userID);// Set user ID
+            platformController.initialize(null, null);
+             // Create a new stage for the platform page
+             Stage platformStage = new Stage();
+             platformStage.setTitle("Platform Page");
+ 
+             // Set the scene with the loaded FXML content
+             platformStage.setScene(new Scene(root));
+ 
+             // Show the new stage
+             platformStage.show();
 
-            stage.setScene(scene);
+             ((Stage) button_login.getScene().getWindow()).close();
+ 
         } catch (IOException e) {
             e.printStackTrace();
         }

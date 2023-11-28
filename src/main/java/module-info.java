@@ -16,6 +16,7 @@ module com.example.yplatform {
     requires jBCrypt;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires org.json;
     opens Client to javafx.fxml;
     exports Client;
 }

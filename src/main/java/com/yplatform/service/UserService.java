@@ -11,24 +11,31 @@ public class UserService {
     private static UserDAOImpl userDAO = new UserDAOImpl();
 
 
-    public static boolean addUser(User user) {
+    public static long addUser(User user) {
         try {
             // Check if the username already exists in the database
             if (userDAO.checkUsernameExists(user.getUsername())) {
                 // If the username exists, return false
-                return false;
+                //System.out.println("User aleready exists");
+                return -1;
             }
             // Proceed to add the user as they do not exist in the database
+            //System.out.println("User doesn't exist");
             userDAO.addUser(user);
-            return true;
+            Optional <User> userOptional = userDAO.getUserByUsername(user.getUsername());
+            if (userOptional.isPresent()) {
+                User user1 = userOptional.get();
+                return user1.getId();
+            }
+            return -1;
         } catch (Exception e) {
             // Log the exception or handle it as per your error handling policy
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
-    public static boolean authenticateUser(String username, String password) {
+    public static long authenticateUser(String username, String password) {
         try {
             // Retrieve the user from the database
             Optional<User> userOptional = userDAO.getUserByUsername(username);
@@ -38,12 +45,12 @@ public class UserService {
                 if (user != null) {
                     // Hash the provided password with the retrieved salt
                     String hashedPassword = BCrypt.hashpw(password, user.getSalt());
-                    System.out.println(hashedPassword);
+                    //System.out.println(hashedPassword);
                     if (userDAO.checkUsernameExists(username)) {
                         // If the username exists, proceed to verify the password
                         if (userDAO.verifyPassword(username, hashedPassword)) {
                             System.out.println("User authenticated");
-                            return true;
+                            return user.getId();
                         }
                     }
                 }
@@ -53,7 +60,7 @@ public class UserService {
             // Handle exception, log it, etc.
 
         }
-        return false; // Authentication failed
+        return -1; // Authentication failed
     }
 }
 

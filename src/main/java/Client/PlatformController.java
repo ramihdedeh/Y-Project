@@ -3,15 +3,25 @@ package Client;
 import com.yplatform.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Timestamp;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class PlatformController {
+public class PlatformController implements Initializable{
     public Button AddFollowerButton;
     public Button RemoveFollowerButton;
     @FXML
@@ -48,7 +58,8 @@ public class PlatformController {
         this.client = client;
     }
 
-    private void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources ) {
         // Initialize any necessary setup
         // Assume userId is obtained or set in your application
         int userId = getUserId(); // Replace with the actual userId
@@ -59,15 +70,7 @@ public class PlatformController {
             User_post.appendText(post + "\n");
         }
     }
-    public PlatformController() {
-        try {
-            // Assuming your server is running on localhost and port 8000
-            client = new Client("localhost", 8000);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle the exception (e.g., show an error message)
-        }
-    }
+
     @FXML
     private void handlePostButtonAction(ActionEvent event) {
         // Get the user ID from wherever you store it (assuming it's available in the PlatformController)
@@ -83,8 +86,11 @@ public class PlatformController {
 
             // If the post was successful, update the User_post TextArea
             if (postSuccessful) {
-                User_post.appendText(message + "\n");
-                // Clear the New_post TextField after posting
+                User_post.clear();
+                List<String> recentPosts = getRecentPosts(userId);
+                for (String post : recentPosts) {
+                     User_post.appendText(post + "\n");
+                }
                 New_post.clear();
             } else {
                 // Handle the case where the message is empty
@@ -97,53 +103,73 @@ public class PlatformController {
     }
 
     // Method to send post request
-    private boolean sendPostRequest(int userId, String message) {
-        try {
-            // Construct the post request
-            String postRequest = "POSTMESSAGE " + userId + " " + message + "\n";
+private boolean sendPostRequest(int userId, String message) {
+    try {
+        client = new Client("localhost", 8000);
 
-            // Send the request to the server
-            client.send(postRequest);
+        // Construct the post request
+        String postRequest = "POSTMESSAGE " + userId + " " + message + "\n";
 
-            // Receive the response from the server
-            String response = client.receive();
-
-            // Check if the post was successful based on the response
-            return "Message posted successfully!".equals(response);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle exception (e.g., log, show an error message)
+        // Send the request to the server
+        client.send(postRequest);
+        //System.out.println("Post req sent.");
+        // Receive the response from the server
+        String response = client.receive();
+        //System.out.println("Post message received.");
+        // Check if the post was successful based on the response
+        if ("Message posted successfully!".equals(response)) {
+            // Close the client connection if the post was successful
+           // System.out.println("Posted successfully");
+            client.close();
+            return true;
+        } else {
+            // Close the client connection and return false if the post failed
+            client.close();
             return false;
         }
+    } catch (IOException e) {
+        e.printStackTrace();
+        // Handle exception (e.g., log, show an error message)
+        return false;
     }
+}
 
-    private List<String> getRecentPosts(int userId) {
-        try {
-            // Construct the request to get recent posts
-            String getRequest = "MYPOSTS" + userId + "\n";
+private List<String> getRecentPosts(int userId) {
+    try {
+        client = new Client("localhost", 8000);
+        // Construct the request to get recent posts
+        String getRequest = "MYPOSTS " + userId + "\n"; // Add a space after MYPOSTS
 
-            // Send the request to the server
-            client.send(getRequest);
+        // Send the request to the server
+        client.send(getRequest);
 
-            // Receive the response from the server
-            String response = client.receive();
+        // Receive the initial response from the server
+        String response = client.receive();
 
-            // Parse the response and return the list of recent posts
-            // You need to implement the logic to parse the response based on your server's protocol
-            // The returned list can be a list of strings, where each string is a post
-            // Example: return List.of("Post 1", "Post 2", "Post 3");
-            // Replace the example with the actual parsing logic.
+        // Check if the response indicates success
+        if ("Success".equals(response)) {
+            // Receive the subsequent JSON file
+            String jsonFile = client.receive();
 
-            // For now, returning an empty list
-            return List.of();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle exception (e.g., log, show an error message)
+            // Parse the JSON file and return the list of recent posts
+            //System.out.println("Message Arrived.\n");
+            List<String> posts = parseJsonPosts(jsonFile);
+            //System.out.println("Retrieved list successfully.\n");
+            client.close();
+            return posts;
+        } else {
+            // Handle the case where the request failed
+            System.out.println("Failed to retrieve recent posts. Server response: " + response);
+            client.close();
             return List.of();
         }
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        // Handle exception (e.g., log, show an error message)
+        return List.of();
     }
+}
     /* this code now is for the followers */
 
 
@@ -153,6 +179,7 @@ public class PlatformController {
     @FXML
     private void handleSearchUsersButton() {
         try {
+            client = new Client("localhost", 8000);
             // Get the search query from the Followers TextField
             String searchQuery = Followers.getText();
 
@@ -175,6 +202,7 @@ public class PlatformController {
             boolean isFollower = isFollower(searchQuery);
             AddFollowerButton.setVisible(!isFollower);
             RemoveFollowerButton.setVisible(isFollower);
+            client.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -184,6 +212,7 @@ public class PlatformController {
 
     private boolean isFollower(String username) {
         try {
+            client = new Client("localhost", 8000);
             // Construct the isFollower request
             String isFollowerRequest = "IS_FOLLOWER " + username + "\n";
 
@@ -194,6 +223,7 @@ public class PlatformController {
             String response = client.receive();
 
             // Parse the response and return true or false
+            client.close();
             return "true".equals(response);
 
         } catch (IOException e) {
@@ -207,6 +237,7 @@ public class PlatformController {
     @FXML
     private void handleAddFollowerButton(ActionEvent event) {
         try {
+            client = new Client("localhost", 8000);
             // Get the username from the Followers TextField
             String username = Followers.getText();
 
@@ -229,6 +260,7 @@ public class PlatformController {
                 // You might want to show an alert or provide feedback to the user
                 showAlert("Error", "Failed to add follower. Please try again.");
             }
+            client.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -240,6 +272,7 @@ public class PlatformController {
     @FXML
     private void handleRemoveFollowerButton(ActionEvent event) {
         try {
+            client = new Client("localhost", 8000);
             // Get the username from the Followers TextField
             String username = Followers.getText();
 
@@ -262,6 +295,7 @@ public class PlatformController {
                 // You might want to show an alert or provide feedback to the user
                 showAlert("Error", "Failed to remove follower. Please try again.");
             }
+            client.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,6 +306,7 @@ public class PlatformController {
     @FXML
     private void handleReloadMessageOfInterest(ActionEvent event) {
         try {
+            client = new Client("localhost", 8000);
             // Get the user ID from wherever you store it (assuming it's available in the PlatformController)
             int userId = getUserId();
 
@@ -285,13 +320,14 @@ public class PlatformController {
             String response = client.receive();
 
             // Process the response and extract posts
-            List<String> posts = parsePostsResponse(response);
+            List<String> posts = parseJsonPosts(response);
 
             // Update the Messageofinterest TextArea with the retrieved posts
             Messageofinterest.clear(); // Clear existing content
             for (String post : posts) {
                 Messageofinterest.appendText(post + "\n");
             }
+            client.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -299,19 +335,28 @@ public class PlatformController {
         }
     }
 
-    private List<String> parsePostsResponse(String response) {
+    private List<String> parseJsonPosts(String jsonResponse) throws JSONException {
         List<String> posts = new ArrayList<>();
-
-        // Assuming the response contains posts separated by a specific delimiter (adjust as needed)
-        String[] postArray = response.split("\\|"); // Change the delimiter as needed
-
-        for (String post : postArray) {
-            posts.add(post);
+        JSONArray jsonArray = new JSONArray(jsonResponse);
+        //System.out.println("Entered the function.");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonPost = jsonArray.getJSONObject(i);
+    
+            // Retrieve post details from the JSON object
+            String content = jsonPost.getString("content");
+            String author = jsonPost.getString("author");
+            Long dateLong = jsonPost.getLong("date");
+    
+            // Convert the Long timestamp to Timestamp
+            Timestamp date = new Timestamp(dateLong);
+    
+            // Construct a string representing the post
+            String postString = author + " " + date + "\n" + content;
+            posts.add(postString);
         }
-
+    
         return posts;
     }
-
     private void showAlert(String title, String content) {
         // Create and show an alert with the specified title and content
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -321,6 +366,6 @@ public class PlatformController {
     }
 
 
-    public void setAuthenticatedUsername(String username) {
-    }
+    //public void setAuthenticatedUsername(String username) {
+    //}
 }

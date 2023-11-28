@@ -19,18 +19,13 @@ public class Post {
         this.user_id = user_id;
         this.post_date = post_date;
     }
-    public Post(Long id, String content, Long user_id, Timestamp post_date) {
-        this.id = id;
-        //this.title = title;
-        this.content = content;
-        this.user_id = user_id;
-        this.post_date = post_date;
-    }
 
-    public Post(String content, Long userId, Timestamp timestamp) {
-    }
 
     public Post(Long postId, String content, Long userId, Timestamp postDate) {
+        this.id = postId;
+        this.content = content;
+        this.user_id = userId;
+        this.post_date = postDate;
     }
 
     // Getters and Setters

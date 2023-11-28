@@ -53,7 +53,7 @@ public class PostService {
         // This is a simplified example, you may need to adjust based on your JSON library
         // Here, assuming you have a PostDto class to represent posts in a simplified way
         List<PostDto> postDtos = posts.stream()
-                .map(post -> new PostDto(/*post.getTitle(),*/ post.getContent(), post.getPostDate(), userDAO.getUsernameById(post.getUserId())))
+                .map(post -> new PostDto(/*post.getTitle(),*/userDAO.getUsernameById(post.getUserId()), post.getPostDate(), post.getContent()))
                 .collect(Collectors.toList());
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -73,7 +73,7 @@ public class PostService {
         private Timestamp date;
         private String author;
 
-        public PostDto(/*String title,*/ String content, Timestamp date, String author) {
+        public PostDto(/*String title,*/ String author, Timestamp date, String content) {
             //this.title = title;
             this.content = content;
             this.date = date;

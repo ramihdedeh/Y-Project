@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public interface UserDAO {
-    void addUser(User user) throws Exception;
+    boolean addUser(User user) throws Exception;
 
     Optional<User> getUserByUsername(String username) throws Exception;
 

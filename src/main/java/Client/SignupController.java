@@ -51,14 +51,16 @@ public class SignupController {
 
 
     @FXML
-    private void handleSignUpButtonAction(ActionEvent event) {
+    private void handleSignUpButtonAction(ActionEvent event) throws IOException {
         // Collect user input
-        String enteredUsername = username.getText();
-        String enteredEmail = email.getText();
-        String enteredPassword = password.getText();
         String enteredFirstName = First_Name.getText();
         String enteredLastName = Last_Name.getText();
         String enteredDateOfBirth = Dateof_birth.getText();
+        String enteredUsername = username.getText();
+        String enteredEmail = email.getText();
+        String enteredPassword = password.getText();
+
+
 
         // Validate user input (customize this based on your requirements)
         if (enteredUsername.isEmpty() || enteredEmail.isEmpty() || enteredPassword.isEmpty() ||
@@ -68,48 +70,42 @@ public class SignupController {
         }
 
         // Send signup information to the server
-        int userId = sendSignupRequest(enteredUsername, enteredEmail, enteredPassword,
-                enteredFirstName, enteredLastName, enteredDateOfBirth);
+        String userId = sendSignupRequest(enteredEmail,enteredFirstName, enteredLastName, enteredDateOfBirth,
+                enteredUsername,enteredPassword);
 
-        if (userId != -1) {
+        if (!userId.isEmpty()) {
             showAlert("Success", "Signup successful!");
 
             // Optionally, you can navigate to the platform page or perform any other necessary actions
-            loadPlatformPage(userId);
+            loadPlatformPage(Integer.parseInt(userId));
 
         } else {
             showAlert("Error", "Signup failed. Please try again.");
         }
     }
-    public int sendSignupRequest(String username, String email, String password,
-                                 String firstName, String lastName, String dateOfBirth) {
+    public String sendSignupRequest(String email, String firstName, String lastName, String dateOfBirth,
+                                 String username, String password) throws IOException {
+        client = new Client("localhost", 8000);
         try {
-            // Construct the signup request
-            String signupRequest = "SIGN UP " + username + " " + email + " " + password +
-                    " " + firstName + " " + lastName + " " + dateOfBirth + "\n";
-
-            // Send the request to the server
+            String signupRequest = "SIGNUP " + email + " " + firstName + " " + lastName + " " + dateOfBirth +
+                    " " + username + " " + password + "\n";
             client.send(signupRequest);
 
-            // Receive the response from the server
             String response = client.receive();
-
-            // Check if the signup was successful based on the response
-            if ("User added successfully".equals(response)) {
-                // Parse and return the user ID from the server response
-                return Integer.parseInt(client.receive());
+            if ("User added successfully.".equals(response)) {
+                // Assuming server sends the user ID after successful signup
+                return username;
             } else {
-                // Signup failed
-                return -1;
+                return "";
             }
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle exception (e.g., log, show an error message)
-            return -1; // Signup failed due to an exception
+            return "";
         }
     }
 
-/* //////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+    /* //////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 
     private void loadPlatformPage(int userId) {
         try {

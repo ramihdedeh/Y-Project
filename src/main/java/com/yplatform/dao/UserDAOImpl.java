@@ -13,14 +13,13 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void addUser(User user) throws Exception {
+    public boolean addUser(User user){
         String sql = "INSERT INTO users (email, first_name, last_name, date_of_birth, username, salt, password) VALUES(?,?,?,?,?,?,?)";
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             // Hash the password before storing it in the database
             String salt = BCrypt.gensalt();
             String hashedPassword = BCrypt.hashpw(user.getPassword(), salt);
-
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getFirstName());
             pstmt.setString(3, user.getLastName());
@@ -29,10 +28,13 @@ public class UserDAOImpl implements UserDAO {
             pstmt.setString(6, salt);
             pstmt.setString(7, hashedPassword); // Use the hashed password
             pstmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
-            throw new Exception("Error adding user", e);
+            System.err.println("Error adding user: " + e.getMessage());
+            return false;
         }
     }
+
 
     @Override
     public Optional<User> getUserByUsername(String username) throws Exception {

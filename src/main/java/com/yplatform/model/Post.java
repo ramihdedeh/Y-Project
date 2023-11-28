@@ -27,6 +27,12 @@ public class Post {
         this.post_date = post_date;
     }
 
+    public Post(String content, Long userId, Timestamp timestamp) {
+    }
+
+    public Post(Long postId, String content, Long userId, Timestamp postDate) {
+    }
+
     // Getters and Setters
 
     public Long getId() {

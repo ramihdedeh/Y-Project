@@ -23,22 +23,9 @@ public class LoginController {
     @FXML
     private PasswordField password;
 
-
-     // Inject YClient instance into the controller
+    // Inject YClient instance into the controller
     private Client client;
 
-    public LoginController() {
-        // Initialize client in the constructor
-        try {
-            // Assuming your server is running on localhost and port 8000
-            client = new Client("localhost", 8000);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle the exception (e.g., show an error message)
-        }
-    }
-
-    // Add a setter method for the Client
     public void setClient(Client client) {
         this.client = client;
     }
@@ -78,79 +65,58 @@ public class LoginController {
         String enteredPassword = password.getText();
 
         // Perform user authentication using Client
-        int userId = authenticateUser(enteredUsername, enteredPassword);
+        String authenticatedUsername = authenticateUser(enteredUsername, enteredPassword);
 
-        if (userId != -1) {
-            loadPlatformPage(userId);
+        if (!authenticatedUsername.isEmpty()) {
+            loadPlatformPage(authenticatedUsername);
         } else {
-            showAlert("Authentication Failed", "not a user");
+            showAlert("Authentication Failed", "Incorrect username or password");
         }
     }
 
-    // Add this method to handle authentication using the Client instance
-    private int authenticateUser(String username, String password) {
+    // Modified method to handle authentication
+    private String authenticateUser(String username, String password) {
         try {
             client = new Client("localhost", 8000);
             if (client == null) {
                 System.err.println("Client is not properly initialized.");
-                return -1;
+                return "";
             }
-            // Construct the authentication request
-            String authenticationRequest = "LOGIN " + username + " " + password;
-            
-            // Send the request to the server
-            client.send(authenticationRequest);
-            System.out.println(authenticationRequest);
 
-            // Receive the response from the server
+            client.send("LOGIN " + username + " " + password);
             String response = client.receive();
 
-            // Check if the authentication was successful based on the response
             if ("Login successful.".equals(response)) {
-                // Parse and return the user ID from the server response
-                return Integer.parseInt(client.receive());
+                return client.receive(); // Receive username if successful
             } else {
-                // Authentication failed
-                return -1;
+                return ""; // Authentication failed
             }
-
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle exception (e.g., log, show an error message)
-            return -1; // Authentication failed due to an exception
+            return ""; // Authentication failed due to an exception
         }
-
     }
 
-    /* //////////////////////////////////////////////////////////////////////////////////////////////////////// */
-        private void showAlert (String title, String content){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(title);
-            alert.setContentText(content);
-            alert.showAndWait();
-        }
-
-        public void loadPlatformPage ( int userId){
-            try {
-                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("/Client/Platform.fxml"));
-                Parent root = loader.load();
-
-                PlatformController platformController = loader.getController();
-                platformController.setUserId(userId);
-                Scene scene = new Scene(root);
-                Stage stage = (Stage) root.getScene().getWindow(); // Assuming you're using the same stage for now
-
-                stage.setScene(scene);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Handle exception (e.g., log, show an error message)
-            }
-        }
-
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
+    public void loadPlatformPage(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("/Client/Platform.fxml"));
+            Parent root = loader.load();
 
+            PlatformController platformController = loader.getController();
+            platformController.setAuthenticatedUsername(username); // Set username instead of userId
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) root.getScene().getWindow();
 
-
-
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,28 +1,28 @@
 package com.yplatform;
 
-//import com.yplatform.model.Post;
-//import com.yplatform.model.User;
+import com.yplatform.model.Post;
+import com.yplatform.model.User;
 import com.yplatform.repository.SQLiteDBManager;
-//import com.yplatform.dao.PostDAO;
-//import com.yplatform.dao.PostDAOImpl;
-//import com.yplatform.dao.UserDAOImpl;
-//import com.yplatform.service.UserService;
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.logging.Logger;
-//import java.util.logging.Level;
-//import java.util.Set;
-//import java.text.ParseException;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
+import com.yplatform.dao.PostDAO;
+import com.yplatform.dao.PostDAOImpl;
+import com.yplatform.dao.UserDAOImpl;
+import com.yplatform.service.UserService;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 public class DatabaseInitializer {
-    //private static final Logger logger = Logger.getLogger(DatabaseInitializer.class.getName());
+    private static final Logger logger = Logger.getLogger(DatabaseInitializer.class.getName());
     public static void main(String[] args) {
         SQLiteDBManager dbManager = new SQLiteDBManager();
         dbManager.initializeDatabase();
 
         // Example: Creating and persisting a user
-        /*User user = new User();
+        User user = new User();
         user.setUsername("user1");
         user.setPassword("Password123@");
         user.setEmail("maa297@mail.aub.edu");
@@ -36,11 +36,11 @@ public class DatabaseInitializer {
              user.setDateOfBirth(sqlDate);
         } catch (ParseException e) {
             e.printStackTrace();
-        };*/
-        /*UserService userService = new UserService();
+        };
+        UserService userService = new UserService();
         UserDAOImpl userDAOImpl = new UserDAOImpl();
         User testUser = new User();
-        //userService.addUser(user);
+        userService.addUser(user);
         try {
             Optional<User> optionalUser = userDAOImpl.getUserByEmail("maa297@mail.aub.edu");
 
@@ -54,7 +54,7 @@ public class DatabaseInitializer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info(testUser.getDateOfBirth()  + " " + testUser.getPassword() + "\n");*/
+        logger.info(testUser.getDateOfBirth()  + " " + testUser.getPassword() + "\n");
         // Validate the user before persisting (you can use your validator here)
 
         // Persist user

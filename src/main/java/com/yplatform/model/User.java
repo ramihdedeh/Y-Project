@@ -10,6 +10,7 @@ public class User {
     private String lastName;
     private Date dateOfBirth;
     private String username;
+    private String salt;
 
     // Password constraints
     // - At least 8 characters
@@ -26,12 +27,13 @@ public class User {
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String password) {
+    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String salt, String password) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.username = username;
+        this.salt = salt;
         this.password = password;
     }
 
@@ -91,6 +93,12 @@ public class User {
         this.username = username;
     }
 
+    public String getSalt(){
+        return salt;
+    }
+    public void setSalt(String salt){
+        this.salt = salt;
+    }
     public String getPassword() {
         return password;
     }

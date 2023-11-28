@@ -29,7 +29,7 @@ public class LoginController {
     public void setClient(Client client) {
         this.client = client;
     }
-
+ 
     @FXML
     private void handleSignUpButtonAction(ActionEvent event) {
         try {

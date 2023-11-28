@@ -252,11 +252,7 @@ public class ClientHandler implements Runnable {
         if (tokens.length == 3) {
             String username = tokens[1];
             String password = tokens[2]; // The plaintext password from the user
-
-            // Hash the password using BCrypt for comparison
-            //String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
-            if (UserService.authenticateUser(username, password)) {
+            if (UserService.authenticateUser(username, password)){
                 writer.write("Login successful.\n");
                 writer.flush(); // Make sure to flush the stream
                 return username; // Return the username if authenticated
@@ -271,7 +267,7 @@ public class ClientHandler implements Runnable {
             return ""; // Return an empty string for invalid arguments
         }
     }
-
+  
     public String handleSignup(String[] tokens, BufferedWriter writer) throws IOException {
         if (tokens.length == 7) {
             String email = tokens[1];

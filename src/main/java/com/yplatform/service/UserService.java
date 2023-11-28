@@ -1,5 +1,8 @@
 package com.yplatform.service;
 
+import org.mindrot.jbcrypt.BCrypt;
+import java.util.Optional;
+
 import com.yplatform.dao.UserDAOImpl;
 import com.yplatform.model.User;
 
@@ -25,15 +28,27 @@ public class UserService {
         }
     }
 
-    public static boolean authenticateUser(String username, String hashedPassword) {
+    public static boolean authenticateUser(String username, String password) {
         try {
-            if (userDAO.checkUsernameExists(username)) {
-                // If the username exists, proceed to verify the password
-                if (userDAO.verifyPassword(username, hashedPassword)) {
-                    System.out.println("User authenticated");
-                    return true;
+            // Retrieve the user from the database
+            Optional<User> userOptional = userDAO.getUserByUsername(username);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                if (user != null) {
+                    // Hash the provided password with the retrieved salt
+                    String hashedPassword = BCrypt.hashpw(password, user.getSalt());
+                    System.out.println(hashedPassword);
+                    if (userDAO.checkUsernameExists(username)) {
+                        // If the username exists, proceed to verify the password
+                        if (userDAO.verifyPassword(username, hashedPassword)) {
+                            System.out.println("User authenticated");
+                            return true;
+                        }
+                    }
                 }
             }
+
         } catch (Exception e) {
             // Handle exception, log it, etc.
 
@@ -41,3 +56,5 @@ public class UserService {
         return false; // Authentication failed
     }
 }
+
+

@@ -1,27 +1,32 @@
 package Client;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.SocketException;
+
 public class Client {
 
-
     private Socket socket;
-    private PrintWriter out;
+    private BufferedWriter out;
     private BufferedReader in;
 
     public Client(String serverAddress, int port) throws IOException {
-        socket = new Socket(serverAddress, port); //  A Socket instance to establish a network connection
-        out = new PrintWriter(socket.getOutputStream(), true); // A PrintWriter to send data to the server
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream())); //  A BufferedReader to read data from the server
+        socket = new Socket(serverAddress, port);
+        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         System.out.println("Connected to server at " + serverAddress + ":" + port);
     }
 
     public void send(String data) {
-        out.println(data);
+        try {
+            out.write(data + "\n"); // Adding newline for line-based reading on the server side
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String receive() throws IOException {

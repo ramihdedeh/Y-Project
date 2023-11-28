@@ -3,7 +3,7 @@ import java.sql.Timestamp;
 public class Post {
 
     private Long id;
-    private String title;
+    //private String title;
     private String content;
     private Long user_id;
     private Timestamp post_date;
@@ -13,15 +13,15 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, String content, Long user_id, Timestamp post_date) {
-        this.title = title;
+    public Post(String content, Long user_id, Timestamp post_date) {
+        //this.title = title;
         this.content = content;
         this.user_id = user_id;
         this.post_date = post_date;
     }
-    public Post(Long id, String title, String content, Long user_id, Timestamp post_date) {
+    public Post(Long id, String content, Long user_id, Timestamp post_date) {
         this.id = id;
-        this.title = title;
+        //this.title = title;
         this.content = content;
         this.user_id = user_id;
         this.post_date = post_date;
@@ -43,13 +43,13 @@ public class Post {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    //public String getTitle() {
+    //    return title;
+    //}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    //public void setTitle(String title) {
+    //    this.title = title;
+    //}
 
     public String getContent() {
         return content;

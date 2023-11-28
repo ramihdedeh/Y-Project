@@ -35,6 +35,12 @@ public class User {
         this.password = password;
     }
 
+    public User(String email, String firstName, String lastName, Date dateOfBirth, String username, String salt, String hashedPassword) {
+    }
+
+    public User(String firstName, String lastName, Date dateOfBirth, String username, String email, String salt, String hashedPassword) {
+    }
+
     // Getters and Setters
 
     public Long getId() {

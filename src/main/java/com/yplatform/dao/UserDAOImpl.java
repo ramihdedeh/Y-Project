@@ -13,24 +13,25 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void addUser(User user) throws Exception {
+    public boolean addUser(User user) {
         String sql = "INSERT INTO users (email, first_name, last_name, date_of_birth, username, password) VALUES(?,?,?,?,?,?)";
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            // Hash the password before storing it in the database
-            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-
+            // Note: Assuming that the password is already hashed before calling this method
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getFirstName());
             pstmt.setString(3, user.getLastName());
             pstmt.setDate(4, new java.sql.Date(user.getDateOfBirth().getTime()));
             pstmt.setString(5, user.getUsername());
-            pstmt.setString(6, hashedPassword); // Use the hashed password
+            pstmt.setString(6, user.getPassword()); // Use the hashed password
             pstmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
-            throw new Exception("Error adding user", e);
+            System.err.println("Error adding user: " + e.getMessage());
+            return false;
         }
     }
+
 
     @Override
     public Optional<User> getUserByUsername(String username) throws Exception {

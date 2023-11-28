@@ -321,4 +321,6 @@ public class PlatformController {
     }
 
 
+    public void setAuthenticatedUsername(String username) {
+    }
 }

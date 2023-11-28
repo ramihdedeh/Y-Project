@@ -1,5 +1,6 @@
 package com.yplatform.server;
 
+import com.almasb.fxgl.app.SystemActions;
 import com.yplatform.dao.PostDAO;
 import com.yplatform.dao.UserDAO;
 import com.yplatform.dao.UserRelationshipDAO;
@@ -44,6 +45,8 @@ public class ClientHandler implements Runnable {
             // Handle client communication here
             // You can use reader and writer to send/receive messages
             String inputLine;
+            //System.out.println("Arrived at Client Handler.");
+            //System.out.println(reader.readLine());
             while ((inputLine = reader.readLine()) != null) {
                 String[] tokens = inputLine.split(" ");
                 String command = tokens[0].toUpperCase();
@@ -63,7 +66,7 @@ public class ClientHandler implements Runnable {
                     case "DELETEPOST":
                         handleDeletePostCommand(tokens, writer);
                         break;
-                    case "SIGN UP":
+                    case "SIGNUP":
                         handleSignup(tokens, writer);
                         break;
                     case "LOGIN":
@@ -93,16 +96,16 @@ public class ClientHandler implements Runnable {
 
     // Add methods for handling user registration, login, and other functionalities
     private void handlePostCommand(String[] tokens, BufferedWriter writer) throws IOException {
-        if (tokens.length == 4){
-            String title = tokens[1];
-            String content = tokens[2];
-            String user_id = tokens[3];
-        // Check if user_id is a valid long value
+        if (tokens.length == 3){
+            //String title = tokens[1];
+            String content = tokens[1];
+            String user_id = tokens[2];
+            // Check if user_id is a valid long value
             try {
                 Long userId = Long.parseLong(user_id);
 
                 // Create a Post object with the extracted information
-                Post post = new Post(title, content, userId, new Timestamp(System.currentTimeMillis()));
+                Post post = new Post(content, userId, new Timestamp(System.currentTimeMillis()));
 
                 // Use the PostService to add the post
                 if (PostService.addPost(post)) {
@@ -121,11 +124,11 @@ public class ClientHandler implements Runnable {
             }
         }
         else {
-        // Invalid command format, inform the client
-        writer.write("Invalid POSTMESSAGE command format. Usage: POSTMESSAGE Title Content User_ID");
-        writer.newLine();
-        writer.flush();
-        return;
+            // Invalid command format, inform the client
+            writer.write("Invalid POSTMESSAGE command format. Usage: POSTMESSAGE Content User_ID");
+            writer.newLine();
+            writer.flush();
+            return;
         }
     }
 
@@ -186,15 +189,15 @@ public class ClientHandler implements Runnable {
         }
     }
     private void handleUpdatePostCommand(String[] tokens, BufferedWriter writer) throws IOException {
-        if (tokens.length == 5) {
+        if (tokens.length == 4) {
             try {
                 Long postId = Long.parseLong(tokens[1]);
-                String title = tokens[2];
-                String content = tokens[3];
-                String user_id = tokens[4];
+                //String title = tokens[2];
+                String content = tokens[2];
+                String user_id = tokens[3];
                 Long userId = Long.parseLong(user_id);
 
-                Post updatedPost = new Post(postId, title, content, userId, new Timestamp(System.currentTimeMillis()));
+                Post updatedPost = new Post(postId, content, userId, new Timestamp(System.currentTimeMillis()));
 
                 if (PostService.updatePost(updatedPost)) {
                     writer.write("Post updated successfully!");
@@ -212,7 +215,7 @@ public class ClientHandler implements Runnable {
             }
         } else {
             // Invalid command format, inform the client
-            writer.write("Invalid UPDATEPOST command format. Usage: UPDATEPOST Post_ID Title Content User_ID");
+            writer.write("Invalid UPDATEPOST command format. Usage: UPDATEPOST Post_ID Content User_ID");
             writer.newLine();
             writer.flush();
         }
@@ -245,96 +248,100 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void handleLogin(String[] tokens, BufferedWriter writer) throws IOException {
+    public String handleLogin(String[] tokens, BufferedWriter writer) throws IOException {
         if (tokens.length == 3) {
             String username = tokens[1];
             String password = tokens[2]; // The plaintext password from the user
 
-            // Hash the password using BCrypt
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            // Hash the password using BCrypt for comparison
+            //String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-            if (UserService.authenticateUser(username, hashedPassword)){
+            if (UserService.authenticateUser(username, password)) {
                 writer.write("Login successful.\n");
+                writer.flush(); // Make sure to flush the stream
+                return username; // Return the username if authenticated
             } else {
                 writer.write("Login failed: Incorrect username or password.\n");
+                writer.flush(); // Make sure to flush the stream
+                return ""; // Return an empty string if authentication fails
             }
         } else {
             writer.write("Login failed: Invalid number of arguments.\n");
+            writer.flush(); // Make sure to flush the stream
+            return ""; // Return an empty string for invalid arguments
+        }
+    }
+
+    public String handleSignup(String[] tokens, BufferedWriter writer) throws IOException {
+        if (tokens.length == 7) {
+            String email = tokens[1];
+            String firstName = tokens[2];
+            String lastName = tokens[3];
+            String dateOfBirthString = tokens[4];
+            String username = tokens[5];
+            String password = tokens[6];
+
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateOfBirth = dateFormat.parse(dateOfBirthString);
+                //String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+                User user = new User(email, firstName, lastName, dateOfBirth, username, password);
+
+                if (UserService.addUser(user)) {
+                    writer.write("User added successfully.");
+                    return username;
+                } else {
+                    writer.write("User could not be added.");
+                    return "";
+                }
+            } catch (ParseException e) {
+                writer.write("Invalid date format. Please use the format yyyy-MM-dd.\n");
+            }
+        } else {
+            writer.write("Invalid number of arguments.\n");
         }
         writer.flush();
+        return "";
     }
-    public void handleSignup(String[] tokens, BufferedWriter writer) throws IOException {
-    if (tokens.length == 7) {
-        String email = tokens[1];
-        String firstName = tokens[2];
-        String lastName = tokens[3];
-        String dateOfBirthString = tokens[4];
-        String username = tokens[5];
-        String password = tokens[6]; // The plaintext password from the user
 
-        try {
-            // Parse the date string into a Date object
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date dateOfBirth = dateFormat.parse(dateOfBirthString);
-
-            // Hash the password using BCrypt
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
-            // Create a new user object
-            User user = new User(email, firstName, lastName, dateOfBirth, username, hashedPassword);
-
-            // Add the user to the database
-            if (UserService.addUser(user)) {
-                writer.write("User added successfully.\n");
-            } else {
-                writer.write("User could not be added.\n");
-            }
-        } catch (ParseException e) {
-            writer.write("Invalid date format. Please use the format yyyy-MM-dd.\n");
-        }
-    } else {
-        writer.write("Invalid number of arguments.\n");
-    }
-    writer.flush();
-    }
     private void handleAddFollower(String[] tokens, BufferedWriter writer) throws IOException {
-    if (tokens.length == 3) {
-        try {
-            Long userId = Long.parseLong(tokens[1]);
-            Long followedUserId = Long.parseLong(tokens[2]);
-            if (UserRelationshipService.addFollower(userId, followedUserId)) {
-                writer.write("Follower added successfully!");
-            } else {
-                writer.write("Failed to add follower. Please try again.");
+        if (tokens.length == 3) {
+            try {
+                Long userId = Long.parseLong(tokens[1]);
+                Long followedUserId = Long.parseLong(tokens[2]);
+                if (UserRelationshipService.addFollower(userId, followedUserId)) {
+                    writer.write("Follower added successfully!");
+                } else {
+                    writer.write("Failed to add follower. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                writer.write("Invalid user IDs. Please provide valid numeric values.");
             }
-        } catch (NumberFormatException e) {
-            writer.write("Invalid user IDs. Please provide valid numeric values.");
+        } else {
+            writer.write("Invalid ADDFOLLOWER command format. Usage: ADDFOLLOWER User_ID Followed_User_ID");
         }
-    } else {
-        writer.write("Invalid ADDFOLLOWER command format. Usage: ADDFOLLOWER User_ID Followed_User_ID");
+        writer.newLine();
+        writer.flush();
     }
-    writer.newLine();
-    writer.flush();
-}
 
-private void handleRemoveFollower(String[] tokens, BufferedWriter writer) throws IOException {
-    if (tokens.length == 3) {
-        try {
-            Long userId = Long.parseLong(tokens[1]);
-            Long followedUserId = Long.parseLong(tokens[2]);
-            if (UserRelationshipService.removeFollower(userId, followedUserId)) {
-                writer.write("Follower removed successfully!");
-            } else {
-                writer.write("Failed to remove follower. Please try again.");
+    private void handleRemoveFollower(String[] tokens, BufferedWriter writer) throws IOException {
+        if (tokens.length == 3) {
+            try {
+                Long userId = Long.parseLong(tokens[1]);
+                Long followedUserId = Long.parseLong(tokens[2]);
+                if (UserRelationshipService.removeFollower(userId, followedUserId)) {
+                    writer.write("Follower removed successfully!");
+                } else {
+                    writer.write("Failed to remove follower. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                writer.write("Invalid user IDs. Please provide valid numeric values.");
             }
-        } catch (NumberFormatException e) {
-            writer.write("Invalid user IDs. Please provide valid numeric values.");
+        } else {
+            writer.write("Invalid REMOVEFOLLOWER command format. Usage: REMOVEFOLLOWER User_ID Followed_User_ID");
         }
-    } else {
-        writer.write("Invalid REMOVEFOLLOWER command format. Usage: REMOVEFOLLOWER User_ID Followed_User_ID");
-    }
-    writer.newLine();
-    writer.flush();
+        writer.newLine();
+        writer.flush();
     }
     private void handleGetFollowers(String[] tokens, BufferedWriter writer) throws IOException {
         if (tokens.length == 2) {
@@ -355,5 +362,4 @@ private void handleRemoveFollower(String[] tokens, BufferedWriter writer) throws
         }
     }
 }
-
 

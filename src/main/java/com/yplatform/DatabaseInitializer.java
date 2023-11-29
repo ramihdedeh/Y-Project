@@ -25,7 +25,7 @@ public class DatabaseInitializer {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("Password123@");
-        user.setEmail("maa297@mail.aub.edu");
+        user.setEmail("example1@mail.aub.edu");
         String dateString = "17-12-1999";
          try {
             // Parsing the string to create a java.util.Date

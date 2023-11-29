@@ -184,24 +184,32 @@ private List<String> getRecentPosts(int userId) {
             String searchQuery = Followers.getText();
 
             // Construct the search users request
-            String searchRequest = "SEARCH_USERS " + searchQuery + "\n";
+            String searchRequest = "SEARCHFORUSER " + searchQuery + "\n";
 
             // Send the request to the server
             client.send(searchRequest);
 
             // Receive the response from the server
             String response = client.receive();
-
+            if(response.equals("User exists.")){
+                if(isFollower(searchQuery)){
+                    RemoveFollowerButton.setVisible(true);
+                    AddFollowerButton.setVisible(false);
+                }
+                else{
+                    RemoveFollowerButton.setVisible(false);
+                    AddFollowerButton.setVisible(true);
+                }
+            }
+            else{
+                AddFollowerButton.setVisible(false);
+                RemoveFollowerButton.setVisible(false);
+            }
             // Parse the response and return the list of matching users
             // Assuming the response is a comma-separated list of usernames
-            String[] usernames = response.split(",");
+            /*String[] usernames = response.split(",");
             // Display the search results in the Followers TextField
-            Followers.setText(String.join(", ", usernames));
-
-            // Check if the user is already a follower and show/hide buttons accordingly
-            boolean isFollower = isFollower(searchQuery);
-            AddFollowerButton.setVisible(!isFollower);
-            RemoveFollowerButton.setVisible(isFollower);
+            Followers.setText(String.join(", ", usernames));*/
             client.close();
 
         } catch (IOException e) {
@@ -214,17 +222,22 @@ private List<String> getRecentPosts(int userId) {
         try {
             client = new Client("localhost", 8000);
             // Construct the isFollower request
-            String isFollowerRequest = "IS_FOLLOWER " + username + "\n";
+            String isFollowerRequest = "GETFOLLOWERS " + userId + "\n";
 
             // Send the request to the server
             client.send(isFollowerRequest);
 
             // Receive the response from the server
             String response = client.receive();
-
-            // Parse the response and return true or false
+            if(response.equals("Success")){
+                String jsonFile = client.receive();
+                List<String> followedUsers =  parseJsonFollowers(jsonFile);
+                client.close();
+                // Check if the given username exists in the list
+                return followedUsers.contains(username);
+            }
             client.close();
-            return "true".equals(response);
+            return false;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -242,8 +255,8 @@ private List<String> getRecentPosts(int userId) {
             String username = Followers.getText();
 
             // Construct the add follower request
-            String addFollowerRequest = "ADDFOLLOWER" + username + "\n";
-
+            String addFollowerRequest = "ADDFOLLOWER " + userId + " " + username + "\n";
+            System.out.println(addFollowerRequest);
             // Send the request to the server
             client.send(addFollowerRequest);
 
@@ -277,7 +290,7 @@ private List<String> getRecentPosts(int userId) {
             String username = Followers.getText();
 
             // Construct the remove follower request
-            String removeFollowerRequest = "REMOVEFOLLOWER" + username + "\n";
+            String removeFollowerRequest = "REMOVEFOLLOWER " + userId + " " + username + "\n";
 
             // Send the request to the server
             client.send(removeFollowerRequest);
@@ -311,7 +324,7 @@ private List<String> getRecentPosts(int userId) {
             int userId = getUserId();
 
             // Construct the request to get posts from followers
-            String request = "INTERESTPOSTS" + userId + "\n";
+            String request = "INTERESTPOSTS " + userId + "\n";
 
             // Send the request to the server
             client.send(request);
@@ -356,6 +369,23 @@ private List<String> getRecentPosts(int userId) {
         }
     
         return posts;
+    }
+    private List<String> parseJsonFollowers(String jsonResponse) throws JSONException {
+        List<String> followedUsersUsernames = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(jsonResponse);
+        //System.out.println("Entered the function.");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonPost = jsonArray.getJSONObject(i);
+    
+            // Retrieve details from the JSON object
+            String username = jsonPost.getString("username");
+        
+            // Construct a string representing the usernames
+            String usernameString = username + "\n";
+            followedUsersUsernames.add(usernameString);
+        }
+    
+        return followedUsersUsernames;
     }
     private void showAlert(String title, String content) {
         // Create and show an alert with the specified title and content

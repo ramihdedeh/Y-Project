@@ -142,14 +142,14 @@ public class PostDAOImpl implements PostDAO{
                      "SELECT p.* FROM posts p " +
                              "JOIN user_relationships r ON p.user_id = r.followed_user_id " +
                              "WHERE r.user_id = ? AND p.post_date >= ? " +
-                             "ORDER BY p.date_created DESC")){
+                             "ORDER BY p.post_date DESC")) {
             preparedStatement.setLong(1, user_id);
-            // Calculate the date 3 days ago
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH, -3);
-            Date threeDaysAgo = calendar.getTime();
-
-            preparedStatement.setDate(2, new java.sql.Date(threeDaysAgo.getTime()));
+            
+            // Calculate the timestamp for 3 days ago
+            Timestamp threeDaysAgo = new Timestamp(System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000));
+    
+            preparedStatement.setTimestamp(2, threeDaysAgo);
+            
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Post post = new Post();
@@ -157,6 +157,7 @@ public class PostDAOImpl implements PostDAO{
                     //post.setTitle(resultSet.getString("title"));
                     post.setPostDate(resultSet.getTimestamp("post_date"));
                     post.setContent(resultSet.getString("content"));
+                    post.setUserId(resultSet.getLong("user_id"));
                     // Set other properties as needed
                     postsOfInterest.add(post);
                 }

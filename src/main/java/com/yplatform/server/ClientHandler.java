@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class ClientHandler implements Runnable {
 
@@ -81,6 +82,9 @@ public class ClientHandler implements Runnable {
                         break;
                     case "GETFOLLOWERS":
                         handleGetFollowers(tokens, writer);
+                        break;
+                    case "SEARCHFORUSER":
+                        handleSearchUser(tokens, writer);
                         break;
                     // Other cases for different functionalities
                     default:
@@ -317,17 +321,30 @@ public class ClientHandler implements Runnable {
         if (tokens.length == 3) {
             try {
                 Long userId = Long.parseLong(tokens[1]);
-                Long followedUserId = Long.parseLong(tokens[2]);
-                if (UserRelationshipService.addFollower(userId, followedUserId)) {
-                    writer.write("Follower added successfully!");
-                } else {
-                    writer.write("Failed to add follower. Please try again.");
+                String followedUsername = tokens[2];
+                try {
+                    Optional<User> optionalUser = userDAO.getUserByUsername(followedUsername);
+                    if (optionalUser.isPresent() && !optionalUser.isEmpty()){
+                        User followedUser = optionalUser.get();
+                        if (UserRelationshipService.addFollower(userId, followedUser.getId())) {
+                            writer.write("Follower added successfully!\n");
+                            writer.flush();
+                        } else {
+                            writer.write("Failed to add follower. Please try again.\n");
+                            writer.flush();
+                        }
+                    }
+                } catch (Exception e) {
+                    writer.write("Failed to find the Followed user.\n");
+                    writer.flush();
                 }
             } catch (NumberFormatException e) {
-                writer.write("Invalid user IDs. Please provide valid numeric values.");
+                writer.write("Invalid user IDs. Please provide valid numeric values.\n");
+                writer.flush();
             }
         } else {
-            writer.write("Invalid ADDFOLLOWER command format. Usage: ADDFOLLOWER User_ID Followed_User_ID");
+            writer.write("Invalid ADDFOLLOWER command format. Usage: ADDFOLLOWER User_ID Followed_User_Username\n");
+            writer.flush();
         }
         writer.newLine();
         writer.flush();
@@ -337,17 +354,31 @@ public class ClientHandler implements Runnable {
         if (tokens.length == 3) {
             try {
                 Long userId = Long.parseLong(tokens[1]);
-                Long followedUserId = Long.parseLong(tokens[2]);
-                if (UserRelationshipService.removeFollower(userId, followedUserId)) {
-                    writer.write("Follower removed successfully!");
-                } else {
-                    writer.write("Failed to remove follower. Please try again.");
+                String followedUsername = tokens[2];
+                try {
+                    Optional<User> optionalUser = userDAO.getUserByUsername(followedUsername);
+                    if (optionalUser.isPresent() && !optionalUser.isEmpty()){
+                        User followedUser = optionalUser.get();
+                        if (UserRelationshipService.removeFollower(userId, followedUser.getId())) {
+                            writer.write("Follower removed successfully!\n");
+                            writer.flush();
+                        } else {
+                            writer.write("Failed to remove follower. Please try again.\n");
+                            writer.flush();
+                        }
+                    }
+                } catch (Exception e) {
+                    writer.write("Failed to find the Followed user.\n");
+                    writer.flush();
                 }
+               
             } catch (NumberFormatException e) {
-                writer.write("Invalid user IDs. Please provide valid numeric values.");
+                writer.write("Invalid user IDs. Please provide valid numeric values.\n");
+                writer.flush();
             }
         } else {
-            writer.write("Invalid REMOVEFOLLOWER command format. Usage: REMOVEFOLLOWER User_ID Followed_User_ID");
+            writer.write("Invalid REMOVEFOLLOWER command format. Usage: REMOVEFOLLOWER User_ID Followed_User_Username\n");
+            writer.flush();
         }
         writer.newLine();
         writer.flush();
@@ -356,6 +387,7 @@ public class ClientHandler implements Runnable {
         if (tokens.length == 2) {
             try {
                 Long userId = Long.parseLong(tokens[1]);
+                writer.write("Success\n");
                 writer.write(UserRelationshipService.convertUsersListToJson(userRelationshipDAO.getFollowers(userId)));
                 writer.newLine();
                 writer.flush();
@@ -369,6 +401,31 @@ public class ClientHandler implements Runnable {
             writer.newLine();
             writer.flush();
         }
+    }
+     // Method to handle the search user by username command from the client
+     public void handleSearchUser(String[] tokens, BufferedWriter writer) throws IOException {
+        if (tokens.length == 2) {
+            String username = tokens[1];
+            // Check if the user with the given username exists
+            boolean userExists = UserService.FindUserByUsername(username);
+
+            // Send the response back to the client
+            if (userExists) {
+                writer.write("User exists.\n");
+                writer.flush();
+            } else {
+                writer.write("User does not exist.\n");
+                writer.flush();
+            }
+
+            writer.newLine();
+            writer.flush();
+        }
+        else {
+            writer.write("Invalid SEARCHFORUSER command format. Usage: SEARCHFORUSER  Username");
+            writer.newLine();
+            writer.flush();
+        }    
     }
 }
 

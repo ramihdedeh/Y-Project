@@ -62,6 +62,19 @@ public class UserService {
         }
         return -1; // Authentication failed
     }
+    // Method to search for a user by username
+    public static boolean FindUserByUsername(String username) {
+        // You can add any additional validation or logic here before calling the DAO method
+        try {
+            Optional<User> userOptional= userDAO.getUserByUsername(username);
+            if (userOptional.isPresent()) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
 
 
